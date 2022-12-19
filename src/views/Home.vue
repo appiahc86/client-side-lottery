@@ -1,35 +1,23 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import { useToast } from "primevue/usetoast";
 import Toast from "primevue/toast";
 import Carousel from 'primevue/carousel';
 import InputNumber from "primevue/inputnumber";
 import Button from 'primevue/button';
-const selectedNumbers = ref([]);
+import axios from "../axios.js";
+
 const toast = useToast();
 const today = new Date().getDay();
 
-const amountToStake = ref(null);
-const stakeInProgress = ref(false);
+//Stake Form Data
+let stakeFormData = reactive({
+  amountToStake: null, selectedNumbers: []
+})
 
-const responsiveOptions = ref([
-  {
-    breakpoint: '1024px',
-    numVisible: 1,
-    numScroll: 1
-  },
-  {
-    breakpoint: '600px',
-    numVisible: 1,
-    numScroll: 1
-  },
-  {
-    breakpoint: '480px',
-    numVisible: 1,
-    numScroll: 1
-  }
-]);
+const stakeInProgress = ref(false); //Sets loading status when staking lottery
 
+//carousel images
 const ads = ref([
   {img: "/img/carousel/1.jpg"},
   {img: "/img/carousel/2.jpg"},
@@ -42,13 +30,13 @@ onMounted(() => {
     number.onclick = function(e){
       if (e.target.classList.contains('active')){
         e.target.classList.remove('active');
-        selectedNumbers.value = selectedNumbers.value.filter(num => num !== parseInt(e.target.innerText));
-      }else if (selectedNumbers.value.length < 10 && !e.target.classList.contains('active')){
+        stakeFormData.selectedNumbers = stakeFormData.selectedNumbers.filter(num => num !== parseInt(e.target.innerText));
+      }else if (stakeFormData.selectedNumbers.length < 10 && !e.target.classList.contains('active')){
         e.target.classList.add('active');
-        return selectedNumbers.value.push(parseInt(e.target.innerText))
+        return stakeFormData.selectedNumbers.push(parseInt(e.target.innerText))
 
 
-      }else if (selectedNumbers.value.length > 9 && !e.target.classList.contains('active'))
+      }else if (stakeFormData.selectedNumbers.length > 9 && !e.target.classList.contains('active'))
         return  toast.add({severity:'error', summary: 'Error', detail:'You cannot select more than 10 numbers', life: 4000});
     }
   }
@@ -56,20 +44,49 @@ onMounted(() => {
 
 
 //Stake Lottery
-const stakeNow = () => {
-  stakeInProgress.value = true;
-  if (!amountToStake.value) return alert('Please Enter Amount To Stake');
-
-  console.log(selectedNumbers.value);
-  alert(amountToStake.value)
-  selectedNumbers.value = [];
-  amountToStake.value = null;
-
+const stakeNow = async () => {
+  stakeInProgress.value = true; //Sets loading State
   const numbers = document.querySelectorAll(".numbers-ball");
-  for (const number of numbers) {
-    if (number.classList.contains('active')) {
-      number.classList.remove('active');
+
+  try {
+    console.log(stakeFormData)
+    // // validation
+    if (!stakeFormData.amountToStake || stakeFormData.amountToStake < 1) return alert('Amount should be at least GHS 1');
+    if (stakeFormData.selectedNumbers.length < 2) return alert('Please Select at least two numbers');
+
+    //Send Data To Server
+    const response = await  axios.post(
+        '/lottery/stake',
+        JSON.stringify(stakeFormData),
+        {
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+          }
+        }
+    )
+
+    if (response.status === 200) {
+      alert(response.data.message);
     }
+
+      //Clear Form Data
+      stakeFormData.selectedNumbers = [];
+      stakeFormData.amountToStake = null;
+
+      for (const number of numbers) {
+        if (number.classList.contains('active')) {
+          number.classList.remove('active');
+        }
+      }
+
+  }catch (e) {
+
+    if (e.response){
+      alert(e.response.data)
+    }else console.log('Sorry, something went wrong')
+
+  }finally {
+    stakeInProgress.value = false;
   }
 
 }
@@ -83,7 +100,7 @@ const stakeNow = () => {
                 <!-- ........... Carousel ............... -->
   <div style="margin-top: 48px !important;">
         <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
-                  :responsiveOptions="responsiveOptions" :autoplayInterval="4000">
+                  :autoplayInterval="4000">
           <template #item="slotProps">
             <div class="product-item">
               <div class="product-item-content">
@@ -162,27 +179,28 @@ const stakeNow = () => {
 
                           <!--  .............. Stake Section ..............  -->
     <form @submit.prevent="stakeNow">
-    <div class="row text-center" v-if="selectedNumbers.length">
+    <div class="row text-center" v-if="stakeFormData.selectedNumbers.length">
 
 <!--      Selected Numbers-->
       <div class="col-sm-6" style="border: 1px solid #ccc">
         <h6 class="mt-3">Selected Numbers</h6>
-                <template v-for="num in selectedNumbers" :key="num">
+                <template v-for="num in stakeFormData.selectedNumbers" :key="num">
                   <div class="numbers-ball-selected d-inline-flex">{{ num }}</div>
                 </template>
       </div>
 
 
 <!--   Amount Entry   -->
-      <div class="col-sm-6" style="border: 1px solid #ccc" v-if="selectedNumbers.length > 1">
+      <div class="col-sm-6" style="border: 1px solid #ccc" v-if="stakeFormData.selectedNumbers.length > 1">
           <h6 class="mt-3">Enter Amount To Stake</h6>
 
-          <InputNumber v-model="amountToStake" mode="currency" currency="GHS" currencyDisplay="code"
-                       spellcheck="false" locale="en-US" :min="1" :max="200" class="mb-3" required/>
+          <InputNumber v-model="stakeFormData.amountToStake" mode="currency" currency="GHS" :allowEampty="false"
+                       spellcheck="false" locale="en-US" :min="0" class="mb-3"/>
 
       </div>
       <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
-              :loading="stakeInProgress" loadingIcon="spinner-border" v-if="selectedNumbers.length > 1"
+              :loading="stakeInProgress" loadingIcon="spinner-border"
+              v-if="stakeFormData.selectedNumbers.length > 1"
       />
     </div>
     </form>
