@@ -5,7 +5,6 @@ const userRoutes = [
         name: 'register-login',
         component: RegisterLogin
     },
-
 ]
 
 
