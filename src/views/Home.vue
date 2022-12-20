@@ -1,15 +1,15 @@
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import { useToast } from "primevue/usetoast";
 import Toast from "primevue/toast";
 import Carousel from 'primevue/carousel';
-import InputNumber from "primevue/inputnumber";
 import Button from 'primevue/button';
 import axios from "../axios.js";
+import { stakeFunction, formatNumber } from "../functions/index.js";
 
 const toast = useToast();
 const today = new Date().getDay();
-
+const payable = ref(0);
 //Stake Form Data
 let stakeFormData = reactive({
   amountToStake: null, selectedNumbers: []
@@ -42,6 +42,16 @@ onMounted(() => {
   }
 })
 
+//Watch amount if it changes, update payable
+watch(() => stakeFormData.amountToStake, (value) => {
+  if (value < 0) stakeFormData.amountToStake = 0;
+  payable.value =  stakeFunction(stakeFormData.selectedNumbers.length, stakeFormData.amountToStake);
+})
+
+//Watch selectedNumbers if it changes, update payable
+watch(() => stakeFormData.selectedNumbers.length, (value) => {
+  payable.value =  stakeFunction(stakeFormData.selectedNumbers.length, stakeFormData.amountToStake);
+})
 
 //Stake Lottery
 const stakeNow = async () => {
@@ -49,7 +59,7 @@ const stakeNow = async () => {
   const numbers = document.querySelectorAll(".numbers-ball");
 
   try {
-    console.log(stakeFormData)
+
     // // validation
     if (!stakeFormData.amountToStake || stakeFormData.amountToStake < 1) return alert('Amount should be at least GHS 1');
     if (stakeFormData.selectedNumbers.length < 2) return alert('Please Select at least two numbers');
@@ -72,6 +82,7 @@ const stakeNow = async () => {
       //Clear Form Data
       stakeFormData.selectedNumbers = [];
       stakeFormData.amountToStake = null;
+      payable.value = 0;
 
       for (const number of numbers) {
         if (number.classList.contains('active')) {
@@ -192,17 +203,21 @@ const stakeNow = async () => {
 
 <!--   Amount Entry   -->
       <div class="col-sm-6" style="border: 1px solid #ccc" v-if="stakeFormData.selectedNumbers.length > 1">
-          <h6 class="mt-3">Enter Amount To Stake</h6>
+          <h6 class="mt-3">Enter Amount To Stake(GHS)</h6>
 
-          <InputNumber v-model="stakeFormData.amountToStake" mode="currency" currency="GHS" :allowEampty="false"
-                       spellcheck="false" locale="en-US" :min="0" class="mb-3"/>
-
+        <input type="number" class="form-control mb-3 shadow-none" min="0" v-model="stakeFormData.amountToStake">
       </div>
+      <h4 class="mt-3">Payable:
+        <span class="text-danger">{{ formatNumber(payable) }}</span>
+      </h4>
       <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
               :loading="stakeInProgress" loadingIcon="spinner-border"
               v-if="stakeFormData.selectedNumbers.length > 1"
       />
+
     </div>
+
+
     </form>
   </div>
 
