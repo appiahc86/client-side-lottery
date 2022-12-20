@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
+import userRoutes from "./users/index.js"
 
 
 const routes = [
@@ -14,6 +15,9 @@ const routes = [
         name: 'about',
         component: About
     },
+
+    //Load imported routes
+    ...userRoutes,
 
 //    redirect to home page if route not found
     {

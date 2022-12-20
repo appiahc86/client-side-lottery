@@ -5,14 +5,8 @@ import Sidebar from "primevue/sidebar";
 import Avatar from 'primevue/avatar';
 
 const visibleLeft = ref(false);
-const usersOnline = ref(0);
 
 // const socket = io('http://localhost:3000');
-
-//online users
-// socket.on('onlineUsers', (num) => {
-//   usersOnline.value = num;
-// })
 
 
 
@@ -26,9 +20,12 @@ import  "../public/css/bootstrap.min.css"
   <nav class="navbar bg-light fixed-top" style="height: 48px !important;">
     <div class="container-fluid">
       <h4 class="navbar-brand mb-0 h1 pi pi-list" @click="visibleLeft = true"></h4>
-      <div class="navbar-nav d-inline-block mx-2">
-        <a class="badge bg-warning rounded-pill mx-2 text-decoration-none text-dark" style="font-size: 1em; cursor: pointer;">Register</a>
-        <a class="badge bg-dark rounded-pill text-decoration-none text-white" style="font-size: 1em; cursor: pointer;">Login</a>
+      <div class="navbar-nav d-inline-block">
+<!--        <a class="badge bg-warning rounded-pill mx-2 text-decoration-none text-dark" style="font-size: 1em; cursor: pointer;">Register</a>-->
+        <router-link :to="{name: 'register-login'}"
+                     class="badge bg-dark rounded-pill text-white text-decoration-none register-btn">
+          Login / Register
+        </router-link>
 <!--        <Avatar icon="pi pi-user" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle" />-->
       </div>
     </div>
@@ -59,5 +56,10 @@ import  "../public/css/bootstrap.min.css"
 </template>
 
 <style scoped>
-
+.register-btn {
+  font-size: 0.9em;
+}
+.register-btn:hover {
+  background: #580270 !important;
+}
 </style>
