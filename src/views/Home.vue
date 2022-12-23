@@ -65,12 +65,7 @@ const stakeNow = async () => {
     //Send Data To Server
     const response = await  axios.post(
         '/lottery/stake',
-        JSON.stringify(stakeFormData),
-        {
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-          }
-        }
+        JSON.stringify(stakeFormData)
     )
 
     if (response.status === 200) {
@@ -90,9 +85,12 @@ const stakeNow = async () => {
 
   }catch (e) {
 
-    if (e.response){
-      alert(e.response.data)
-    }else console.log('Sorry, something went wrong')
+    if (e.response) return alert(e.response.data);
+    if (e.request && e.request.status === 0) {
+      return alert('Sorry, Connection to Server refused. Please check your internet connection or try again later');
+    }
+
+    return alert('Sorry, something went wrong. Please try again later');
 
   }finally {
     stakeInProgress.value = false;

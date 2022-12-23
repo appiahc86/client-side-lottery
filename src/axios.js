@@ -18,14 +18,7 @@ axios.interceptors.response.use(function (response) {
 }, function (e) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    if (e.request && e.request.status === 0) {
-        return toast.add({
-            severity: 'warn',
-            summary: 'Error',
-            detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later',
-            life: 5000,
-        });
-    }
+
     return Promise.reject(e);
 });
 
