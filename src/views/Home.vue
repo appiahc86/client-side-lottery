@@ -1,13 +1,10 @@
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
-import { useToast } from "primevue/usetoast";
-import Toast from "primevue/toast";
 import Carousel from 'primevue/carousel';
 import Button from 'primevue/button';
 import axios from "../axios.js";
 import { stakeFunction, formatNumber } from "../functions/index.js";
 
-const toast = useToast();
 const today = new Date().getDay();
 const payable = ref(0);
 //Stake Form Data
@@ -37,7 +34,7 @@ onMounted(() => {
 
 
       }else if (stakeFormData.selectedNumbers.length > 9 && !e.target.classList.contains('active'))
-        return  toast.add({severity:'error', summary: 'Error', detail:'You cannot select more than 10 numbers', life: 4000});
+        return  toast.add({severity:'warn', summary: 'Sorry!', detail:'You cannot select more than 10 numbers', life: 4000});
     }
   }
 })
@@ -52,6 +49,7 @@ watch(() => stakeFormData.amountToStake, (value) => {
 watch(() => stakeFormData.selectedNumbers.length, (value) => {
   payable.value =  stakeFunction(stakeFormData.selectedNumbers.length, stakeFormData.amountToStake);
 })
+
 
 //Stake Lottery
 const stakeNow = async () => {
@@ -205,7 +203,8 @@ const stakeNow = async () => {
       <div class="col-sm-6" style="border: 1px solid #ccc" v-if="stakeFormData.selectedNumbers.length > 1">
           <h6 class="mt-3">Enter Amount To Stake(GHS)</h6>
 
-        <input type="number" class="form-control mb-3 shadow-none" min="0" v-model="stakeFormData.amountToStake">
+        <input type="number" class="form-control mb-3 shadow-none" min="0" oninput="validity.valid || (value = 0)"
+               v-model.number="stakeFormData.amountToStake">
       </div>
       <h4 class="mt-3">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
@@ -224,7 +223,6 @@ const stakeNow = async () => {
 
   <br><br><br><br>
 
-  <Toast />
 </template>
 
 <style scoped>

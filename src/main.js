@@ -5,7 +5,9 @@ import App from './App.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 
-import 'primevue/resources/themes/rhea/theme.css';
+
+// import 'primevue/resources/themes/rhea/theme.css';
+import 'primevue/resources/themes/saga-purple/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 

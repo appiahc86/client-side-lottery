@@ -2,8 +2,8 @@
 import axios from "axios";
 
 // axios.defaults.baseURL = "http://localhost:3000";
-// axios.defaults.baseURL = "http://192.168.1.101:3000";
-axios.defaults.baseURL = "https://test.christrevivalch.org";
+axios.defaults.baseURL = "http://192.168.1.101:3000";
+// axios.defaults.baseURL = "https://test.christrevivalch.org";
 // axios.defaults.headers.common['Authorization'] = "Bearer " +  token;
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
 axios.defaults.headers.patch['Content-Type'] = 'application/json; charset=utf-8';
@@ -18,8 +18,14 @@ axios.interceptors.response.use(function (response) {
 }, function (e) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    if (e.request && e.request.status === 0) return alert("Sorry, Connection to Server refused");
-
+    if (e.request && e.request.status === 0) {
+        return toast.add({
+            severity: 'warn',
+            summary: 'Error',
+            detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later',
+            life: 5000,
+        });
+    }
     return Promise.reject(e);
 });
 

@@ -1,16 +1,23 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import Button from 'primevue/button';
 import TabPanel from "primevue/tabpanel";
 import TabView from "primevue/tabview";
-import Checkbox from "primevue/checkbox";
 import {useRouter} from "vue-router";
 
 const router = useRouter();
 const showPassword = ref(false);
 const dialog = ref();
-const phoneNumber = ref();
+const error = ref('');
+
 const loadingInProgress = ref(false);
+
+const registerData = reactive({ //Registration Form Data
+  phoneNumber: null, password: "", password_confirmation: ''
+})
+const loginData = reactive({    // Login Form Data
+  phoneNumber: null, password: ""
+})
 
 //Close form
 const closeForm = () => {
@@ -18,7 +25,7 @@ const closeForm = () => {
   router.push({name: 'home'})
 }
 
-//on mounted hook
+//on mounted hook show modal
 onMounted(() => {
 dialog.value.showModal();
 dialog.value.addEventListener('cancel', (e) => e.preventDefault());
@@ -26,9 +33,8 @@ dialog.value.addEventListener('cancel', (e) => e.preventDefault());
 
 //Validate phone number
 const validatePhoneNumber = (e) => {
-  e.preventDefault();
-  console.log(e.target.value, e)
-
+  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+  e.target.value = e.target.value.replace(/(\..*)\./g, '$1');
 }
 
                     //..............Login..................
@@ -46,15 +52,20 @@ const login = async () => {
 
 
                   //..............Register..................
-const register = async () => {
+const registerUser = async () => {
+
   try {
     loadingInProgress.value = true;
-    if (phoneNumber.value.toString().length > 9)
-      alert('Please check number')
-    console.log(phoneNumber.value);
+
+    //Validation
+    if (registerData.phoneNumber.length < 9) return error.value = "Please check phone Number";
+    if (registerData.phoneNumber.length < 9) return error.value = "Please check phone Number";
+
+
+
   }catch (e) {
 
-  }finally { loadingInProgress.value = true; }
+  }finally { loadingInProgress.value = false; }
 
 }
 </script>
@@ -72,24 +83,26 @@ const register = async () => {
 <!--  Register  -->
     <TabPanel header="Register">
 
-      <form @submit.prevent="register">
+      <form @submit.prevent="registerUser">
         Register with your momo number
         <div class="input-group">
           <div class="input-group-prepend">
             <div class="input-group-text">+233</div>
           </div>
-          <input type="number" class="form-control shadow-none" min="0"
-                 v-model.number="phoneNumber">
+          <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="registerData.phoneNumber"
+                 @input="validatePhoneNumber">
         </div>
 
           <br>
-          <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none" placeholder="Password">
+          <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                v-model="registerData.password" placeholder="Password">
           <br>
-          <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none" placeholder="Confirm Password">
+          <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                v-model="registerData.password_confirmation" placeholder="Confirm Password">
 
         <div class="form-check mt-3">
-          <input class="form-check-input" id="showPassword" type="checkbox" v-model="showPassword">
-          <label class="form-check-label" for="showPassword">
+          <input class="form-check-input" id="showRegisterPassword" type="checkbox" v-model="showPassword">
+          <label class="form-check-label" for="showRegisterPassword">
             Show Password
           </label>
         </div>
@@ -111,8 +124,8 @@ const register = async () => {
                 <div class="input-group-prepend">
                   <div class="input-group-text">+233</div>
                 </div>
-                <input type="number" min="0" class="form-control shadow-none"
-                       v-model.number="phoneNumber">
+                <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="loginData.phoneNumber"
+                       @input="validatePhoneNumber">
               </div>
 
               <br>

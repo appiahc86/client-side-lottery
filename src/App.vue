@@ -1,10 +1,16 @@
 <script setup>
 import { io }  from "socket.io-client";
 import { ref } from "vue";
+import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
 import Avatar from 'primevue/avatar';
 
-const visibleLeft = ref(false);
+
+import { useToast } from "primevue/usetoast";
+
+window.toast = useToast();
+
+const visibleLeft = ref(false); // this will toggle the sidebar
 
 // const socket = io('http://localhost:3000');
 
@@ -53,6 +59,7 @@ import  "../public/css/bootstrap.min.css"
     </ul>
 
   </Sidebar>
+  <Toast position="center" style="padding: 0;" class="my-toast"/>
 </template>
 
 <style scoped>
@@ -61,5 +68,11 @@ import  "../public/css/bootstrap.min.css"
 }
 .register-btn:hover {
   background: #580270 !important;
+}
+
+@media screen and (max-width: 500px){
+  .my-toast{
+    font-size: 0.5em !important;
+  }
 }
 </style>
