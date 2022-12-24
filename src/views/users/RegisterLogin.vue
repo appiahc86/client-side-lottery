@@ -5,7 +5,9 @@ import TabPanel from "primevue/tabpanel";
 import TabView from "primevue/tabview";
 import {useRouter} from "vue-router";
 import axios from "../../axios.js";
+import { useHomeStore} from "../../store/home.js";
 
+const store = useHomeStore();
 const router = useRouter();
 const showPassword = ref(false);
 const dialog = ref();
@@ -65,8 +67,8 @@ const registerUser = async () => {
     if (!registerData.password.match(regex)) return registerError.value = "Password length cannot be less than 6 and should contain at least one special character";
     if (registerData.password !== registerData.password_confirmation) return registerError.value = "Passwords do not match";
 
-    //clear error message
-    registerError.value = "";
+
+
 
     //Send Data To Server
     const response = await  axios.post(
@@ -75,8 +77,10 @@ const registerUser = async () => {
     )
 
     if (response.status === 201) {
-      alert('success');
+      store.setRegistrationData(registerData.phoneNumber, registerData.password)
+      return router.push({name: 'verify'})
     }
+
 
 
 
@@ -90,6 +94,8 @@ const registerUser = async () => {
   }finally { loadingInProgress.value = false; }
 
 }
+
+
 </script>
 
 <template>

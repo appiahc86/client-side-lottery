@@ -4,20 +4,17 @@ import { ref } from "vue";
 import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
 import Avatar from 'primevue/avatar';
-
-
+import { useHomeStore } from "./store/home.js";
 import { useToast } from "primevue/usetoast";
 
 window.toast = useToast();
+const store = useHomeStore();
 
 const visibleLeft = ref(false); // this will toggle the sidebar
 
 // const socket = io('http://localhost:3000');
 
 
-
-
-import  "../public/css/bootstrap.min.css"
 </script>
 
 <template>
@@ -32,6 +29,7 @@ import  "../public/css/bootstrap.min.css"
                      class="badge bg-dark rounded-pill text-white text-decoration-none register-btn">
           Login / Register
         </router-link>
+        <h5>{{ store.count }}</h5>
 <!--        <Avatar icon="pi pi-user" class="mr-2" style="background-color:#2196F3; color: #ffffff" shape="circle" />-->
       </div>
     </div>
