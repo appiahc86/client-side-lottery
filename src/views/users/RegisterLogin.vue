@@ -57,10 +57,12 @@ const registerUser = async () => {
 
   try {
     loadingInProgress.value = true;
+    const regex = /^(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{6,}$/g;
 
     //Validation
     if (registerData.phoneNumber.toString().length  < 9) return registerError.value = "Please check phone number";
-    if (registerData.password.length < 6) return registerError.value = "Password cannot be less than 6 characters";
+    if (!registerData.password.trim()) return registerError.value = "Please provide a password";
+    if (!registerData.password.match(regex)) return registerError.value = "Password length cannot be less than 6 and should contain at least one special character";
     if (registerData.password !== registerData.password_confirmation) return registerError.value = "Passwords do not match";
 
     //clear error message
@@ -91,7 +93,7 @@ const registerUser = async () => {
 </script>
 
 <template>
-<dialog ref="dialog" class="border-0 p-1">
+<dialog ref="dialog" id="myDialog" class="border-0 p-1">
 
   <button style="float: right; margin-left: 10px; width: 30px;" class="text-white bg-danger border-0 fw-bold"
           @click="closeForm" title="Close">X</button>
@@ -105,7 +107,7 @@ const registerUser = async () => {
 
       <form @submit.prevent="registerUser">
         <template v-if="registerError">
-          <p class="text-danger text-center">{{ registerError }}</p>
+          <p class="text-danger text-center" id="errorMessage">{{ registerError }}</p>
         </template>
         Register with your momo number
         <div class="input-group">
@@ -133,8 +135,6 @@ const registerUser = async () => {
         <div class="text-center">
           <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border"
                   class="p-button  p-button-rounded mt-2"/>
-<!--          <button :disabled="loadingInProgress">-->
-<!--            Register</button>-->
         </div>
 
       </form>
@@ -181,5 +181,12 @@ const registerUser = async () => {
 
 
 <style scoped>
-
+@media screen and (min-width: 500px) {
+  #myDialog {
+    width: 500px;
+  }
+  #errorMessage {
+    max-width: 500px;
+  }
+}
 </style>
