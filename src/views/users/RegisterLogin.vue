@@ -54,8 +54,8 @@ const login = async () => {
 }
 
 
-                  //..............Register..................
-const registerUser = async () => {
+                  //..............Request SMS code for verification..................
+const requestSMS = async () => {
 
   try {
     loadingInProgress.value = true;
@@ -72,13 +72,13 @@ const registerUser = async () => {
 
     //Send Data To Server
     const response = await  axios.post(
-        '/users/register',
+        '/users/verify',
         JSON.stringify({...registerData ,password_confirmation: undefined})
     )
 
-    if (response.status === 201) {
-      store.setRegistrationData(registerData.phoneNumber, registerData.password)
-      return router.push({name: 'verify'})
+    if (response.status === 200) {
+      store.setRegistrationData(registerData.phoneNumber, registerData.password, response.data.message);
+      return router.push({name: 'verify'});
     }
 
 
@@ -89,6 +89,7 @@ const registerUser = async () => {
     if (e.request && e.request.status === 0) {
       return registerError.value = 'Sorry, Connection to Server refused. Please check your internet connection or try again later';
     }
+
     return registerError.value = 'Sorry, something went wrong. Please try again later';
 
   }finally { loadingInProgress.value = false; }
@@ -111,7 +112,7 @@ const registerUser = async () => {
 <!--  Register  -->
     <TabPanel header="Register">
 
-      <form @submit.prevent="registerUser">
+      <form @submit.prevent="requestSMS">
         <template v-if="registerError">
           <p class="text-danger text-center" id="errorMessage">{{ registerError }}</p>
         </template>

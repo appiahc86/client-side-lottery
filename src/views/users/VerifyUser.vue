@@ -1,7 +1,7 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import Button from 'primevue/button';
-import {useRouter} from "vue-router";
+import {onBeforeRouteLeave, useRouter} from "vue-router";
 import axios from "../../axios.js";
 import { useHomeStore} from "../../store/home.js";
 
@@ -9,12 +9,11 @@ const store = useHomeStore();
 
 const router = useRouter();
 const dialog = ref();
-const verifyError = ref('');
+const registerError = ref('');
 const verificationCode = ref(null);
 
 const loadingInProgress = ref(false);
 
-//TODO on route leave clear verification data from store
 
 //Close form
 const closeForm = () => {
@@ -24,32 +23,50 @@ const closeForm = () => {
 
 //on mounted hook show modal
 onMounted(() => {
+  if (!store.registrationPhoneNumber || !store.pass) return  router.push({name: 'home'}); //Redirect home
   dialog.value.showModal();
   dialog.value.addEventListener('cancel', (e) => e.preventDefault());
-})
 
-//Validate phone number
+})
+onBeforeRouteLeave(() => store.clearRegistrationData()); //on route leave clear verification data from store
+
+
+//Validate input
 const validateNumber = (e) => {
   e.target.value = e.target.value.replace(/[^0-9]/g, '');
   e.target.value = e.target.value.replace(/(\..*)\./g, '$1');
 }
 
+//watch verification code if it matches the one in session storage
+watch(() => verificationCode.value, async (value) => {
+  if (value === store.verificationNumber) await registerUser();
+})
 
 
 //..............Register..................
-const verify = async () => {
+const registerUser = async () => {
 
   try {
+    //Validation
+    if (verificationCode.value !== store.verificationNumber)
+      return registerError.value = "Sorry! you entered a wrong verification code";
+
     loadingInProgress.value = true;
 
-
     //Send Data To Server
-    // const response = await  axios.post(
-    //     '/users/verify/1',
-    //     JSON.stringify({...registerData ,password_confirmation: undefined})
-    // )
-    //
-    // if (response.status === 201) alert('success'); //success
+    const response = await  axios.post(
+        '/users/register',
+        JSON.stringify({
+          phoneNumber: store.registrationPhoneNumber,
+          password: store.pass
+        })
+    )
+
+    if (response.status === 201) {
+      store.clearRegistrationData();
+      router.push({name: 'home'});
+      return toast.add({severity:'success', summary: 'Congrats!', detail:'Registration was successful', life: 4000});
+    }
 
 
 
@@ -57,13 +74,16 @@ const verify = async () => {
   }catch (e) {
     if (e.response) return registerError.value = e.response.data;
     if (e.request && e.request.status === 0) {
-      return verifyError.value = 'Sorry, Connection to Server refused. Please check your internet connection or try again later';
+      return registerError.value = 'Sorry, Connection to Server refused. Please check your internet connection or try again later';
     }
-    return verifyError.value = 'Sorry, something went wrong. Please try again later';
+
+    return registerError.value = 'Sorry, something went wrong. Please try again later';
 
   }finally { loadingInProgress.value = false; }
 
 }
+
+
 </script>
 
 <template>
@@ -75,8 +95,11 @@ const verify = async () => {
 
       <div class="card shadow p-4">
         <h6>Please Enter Verification Code Sent To Your Phone</h6>
-        <form action="">
-          <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="verificationCode"
+        <template v-if="registerError">
+          <p class="text-danger text-center mt-2" id="errorMessage">{{ registerError }}</p>
+        </template>
+        <form @submit.prevent="registerUser">
+          <input type="tel" class="form-control shadow-none" maxlength="6" v-model.number="verificationCode"
                  @input="validateNumber">
 
           <div class="text-center">
