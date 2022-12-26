@@ -12,7 +12,7 @@ const router = useRouter();
 const showPassword = ref(false);
 const dialog = ref();
 const registerError = ref('');
-
+console.log(store.token)
 const loadingInProgress = ref(false);
 
 const registerData = reactive({ //Registration Form Data
@@ -73,7 +73,10 @@ const requestSMS = async () => {
     //Send Data To Server
     const response = await  axios.post(
         '/users/verify',
-        JSON.stringify({...registerData ,password_confirmation: undefined})
+        JSON.stringify({...registerData ,password_confirmation: undefined}),
+        {
+          headers: { 'Authorization': `Bearer ${store.token}`}
+        }
     )
 
     if (response.status === 200) {

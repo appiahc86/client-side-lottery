@@ -3,7 +3,7 @@ import {onMounted, ref, watch} from "vue";
 import Button from 'primevue/button';
 import {onBeforeRouteLeave, useRouter} from "vue-router";
 import axios from "../../axios.js";
-import { useHomeStore} from "../../store/home.js";
+import { useHomeStore } from "../../store/home.js";
 
 const store = useHomeStore();
 
@@ -26,8 +26,8 @@ onMounted(() => {
   if (!store.registrationPhoneNumber || !store.pass) return  router.push({name: 'home'}); //Redirect home
   dialog.value.showModal();
   dialog.value.addEventListener('cancel', (e) => e.preventDefault());
-
 })
+
 onBeforeRouteLeave(() => store.clearRegistrationData()); //on route leave clear verification data from store
 
 
@@ -39,7 +39,7 @@ const validateNumber = (e) => {
 
 //watch verification code if it matches the one in session storage
 watch(() => verificationCode.value, async (value) => {
-  if (value === store.verificationNumber) await registerUser();
+  if (value === store.verificationCode) await registerUser();
 })
 
 
@@ -48,7 +48,7 @@ const registerUser = async () => {
 
   try {
     //Validation
-    if (verificationCode.value !== store.verificationNumber)
+    if (verificationCode.value !== store.verificationCode)
       return registerError.value = "Sorry! you entered a wrong verification code";
 
     loadingInProgress.value = true;
@@ -64,6 +64,9 @@ const registerUser = async () => {
 
     if (response.status === 201) {
       store.clearRegistrationData();
+      // store.token = response.data.token;
+      store.setToken(response.data.token);
+
       router.push({name: 'home'});
       return toast.add({severity:'success', summary: 'Congrats!', detail:'Registration was successful', life: 4000});
     }
@@ -77,6 +80,7 @@ const registerUser = async () => {
       return registerError.value = 'Sorry, Connection to Server refused. Please check your internet connection or try again later';
     }
 
+    console.log(e)
     return registerError.value = 'Sorry, something went wrong. Please try again later';
 
   }finally { loadingInProgress.value = false; }

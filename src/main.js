@@ -17,8 +17,8 @@ import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 
 const app = createApp(App);
-app.use(pinia);
 app.use(PrimeVue);
 app.use(ToastService);
 app.use(router);
+app.use(pinia);
 app.mount('#app');

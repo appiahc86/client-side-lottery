@@ -4,6 +4,9 @@ import Carousel from 'primevue/carousel';
 import Button from 'primevue/button';
 import axios from "../axios.js";
 import { stakeFunction, formatNumber } from "../functions/index.js";
+import {useHomeStore} from "../store/home.js";
+
+const store = useHomeStore();
 
 const today = new Date().getDay();
 const payable = ref(0);
@@ -65,10 +68,13 @@ const stakeNow = async () => {
     //Send Data To Server
     const response = await  axios.post(
         '/lottery/stake',
-        JSON.stringify(stakeFormData)
+        JSON.stringify(stakeFormData),
+        {
+          headers: { 'Authorization': `Bearer ${store.token}`}
+        }
     )
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       alert(response.data.message);
     }
 
@@ -85,7 +91,8 @@ const stakeNow = async () => {
 
   }catch (e) {
 
-    if (e.response) return alert(e.response.data);
+    if (e.response) return  toast.add({severity:'warn', summary: 'Not Authenticated!', detail: e.response.data, life: 4000});
+
     if (e.request && e.request.status === 0) {
       return alert('Sorry, Connection to Server refused. Please check your internet connection or try again later');
     }
@@ -181,8 +188,6 @@ const stakeNow = async () => {
 
       </div>
     </div>
-
-
 
                           <!--  .............. Stake Section ..............  -->
     <form @submit.prevent="stakeNow">
