@@ -5,6 +5,7 @@ import Button from 'primevue/button';
 import axios from "../axios.js";
 import { stakeFunction, formatNumber } from "../functions/index.js";
 import {useHomeStore} from "../store/home.js";
+import router from "../router/index.js";
 
 const store = useHomeStore();
 
@@ -56,14 +57,26 @@ watch(() => stakeFormData.selectedNumbers.length, (value) => {
 
 //Stake Lottery
 const stakeNow = async () => {
+  if (!store.token) return router.push({name: 'register-login'})
   stakeInProgress.value = true; //Sets loading State
   const numbers = document.querySelectorAll(".numbers-ball");
 
   try {
 
     // // validation
-    if (!stakeFormData.amountToStake || stakeFormData.amountToStake < 1) return alert('Amount should be at least GHS 1');
-    if (stakeFormData.selectedNumbers.length < 2) return alert('Please Select at least two numbers');
+    if (stakeFormData.selectedNumbers.length < 2) {
+      return toast.add({severity:'warn', summary: 'Error', detail: 'Please Select at least two numbers', life: 4000});
+    }
+
+    if (!stakeFormData.amountToStake || stakeFormData.amountToStake < 1){
+      return toast.add({severity:'warn', summary: 'Error', detail: 'Amount should be at least GHS 1', life: 4000});
+    }
+
+    if (parseFloat(store.user.balance) < parseInt(payable.value)){
+      return toast.add({severity:'warn', summary: 'Error', detail: 'Balance is not sufficient', life: 4000});
+    }
+
+
 
     //Send Data To Server
     const response = await  axios.post(
@@ -75,7 +88,8 @@ const stakeNow = async () => {
     )
 
     if (response.status === 201) {
-      alert(response.data.message);
+      store.user.balance  = parseFloat(store.user.balance) - parseFloat(payable.value);
+      toast.add({severity:'success', summary: 'Thank You', detail: 'Your Stake was successful!', life: 4000});
     }
 
       //Clear Form Data
@@ -91,13 +105,17 @@ const stakeNow = async () => {
 
   }catch (e) {
 
-    if (e.response) return  toast.add({severity:'warn', summary: 'Not Authenticated!', detail: e.response.data, life: 4000});
+    if (e.response) return  toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
 
     if (e.request && e.request.status === 0) {
-      return alert('Sorry, Connection to Server refused. Please check your internet connection or try again later');
+      return  toast.add({
+        severity:'error', summary: 'Error',
+        detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later',
+        life: 4000});
     }
 
-    return alert('Sorry, something went wrong. Please try again later');
+    return toast.add({severity:'warn', summary: 'Error',
+      detail: 'Sorry, something went wrong. Please try again later', life: 4000})
 
   }finally {
     stakeInProgress.value = false;

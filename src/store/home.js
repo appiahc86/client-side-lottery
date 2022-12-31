@@ -6,54 +6,6 @@ import { parse, stringify,  } from 'zipson';
 // but it's best to use the name of the store and surround it with `use`
 // and `Store` (e.g. `useUserStore`, `useCartStore`, `useProductStore`)
 // the first argument is a unique id of the store across your application
-// export const useHomeStore = defineStore('homeStore', () => {
-//     const registrationPhoneNumber = ref(null);
-//     const pass = ref('');
-//     const verificationCode = ref(null);
-//     const user = ref(null);
-//     const token = ref('');
-//
-//     //Set registration data
-//     function setRegistrationData (num, password, vCode){
-//         registrationPhoneNumber.value = num;
-//         pass.value = password;
-//         verificationCode.value = vCode;
-//     }
-//         //Set registration data
-//     function clearRegistrationData(){
-//         registrationPhoneNumber.value = null;
-//         pass.value = '';
-//         verificationCode.value = null
-//     }
-//
-//     //Set Token
-//     function setToken(payload){
-//       token.value = payload
-//     }
-//
-//
-//
-//     return {
-//         registrationPhoneNumber,
-//         pass,
-//         verificationCode,
-//         setRegistrationData,
-//         clearRegistrationData,
-//         setToken,
-//     }
-// },
-//     {persist: {
-//         key: '_loda',
-//             storage: sessionStorage,
-//             // paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token'],
-//             serializer: {
-//                 deserialize: parse,
-//                 serialize: stringify
-//             }
-// }}
-//
-// )
-
 
 
 export const useHomeStore = defineStore('homeStore', {
@@ -62,7 +14,7 @@ export const useHomeStore = defineStore('homeStore', {
             registrationPhoneNumber: null,
             pass: "",
             verificationCode: null,
-            user: null,
+            user: {},
             token: ""
          }
     },
@@ -90,15 +42,21 @@ export const useHomeStore = defineStore('homeStore', {
         //Set Token
      setToken(payload){ this.token = payload },
 
+    //set User
+    setUser(payload){ this.user = payload },
+
        //Clear Token
-     clearToken(){ this.token = "" }
+     clearToken(){ this.token = "" },
+
+    //Clear User
+    clearUser(){ this.user = {} }
 
     },
 
     persist: {
        key: '_loda',
             storage: sessionStorage,
-            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token'],
+            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user'],
             serializer: {
                 deserialize: parse,
                 serialize: stringify

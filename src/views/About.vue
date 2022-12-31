@@ -4,7 +4,7 @@
 
 <template>
   <div class="container-fluid mt-5">
-    <h3>About</h3>
+    <h3 style="margin-bottom: 400px">About</h3>
   </div>
 
 </template>

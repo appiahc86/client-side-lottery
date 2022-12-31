@@ -20,25 +20,29 @@ let profileSidebar = ref(false); // this will toggle the sidebar for user profil
 
 //Logout
 const logout = () => {
-  store.clearToken();
-  router.push({name: 'home'});
   profileSidebar.value = false;
+  store.clearToken();
+  store.clearUser();
+  router.push({name: 'home'});
+  toast.add({severity:'success', summary: 'Success', detail: 'You are logged out', life: 4000});
+
+  // return router.push({name: 'logout'})
 }
 </script>
 
 <template>
 
-  <nav class="navbar navbar-expand-lg bg-light">
+  <nav class="navbar navbar-expand-lg bg-light fixed-top" style="height: 48px">
     <div class="container-fluid">
       <h4 class="navbar-brand mb-0 h1 pi pi-list" @click="visibleLeft = true"></h4>
       <div class="dropdown">
 
         <router-link :to="{name: 'register-login'}" v-if="!store.token"
-                     class="badge bg-dark rounded-pill text-white text-decoration-none register-btn">
+                     class="badge bg-dark rounded-pill text-white text-decoration-none register-btn py-2">
           Login / Register
         </router-link>
 
-        <Avatar icon="pi pi-user" class="mr-2" style="background-color:#2196F3; color: #ffffff"
+        <Avatar icon="pi pi-user" class="mr-2" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
                v-if="store.token" shape="circle" @click="profileSidebar = true"/>
 
       </div>
@@ -67,6 +71,8 @@ const logout = () => {
 <!--  User profile sidebar-->
   <Sidebar v-model:visible="profileSidebar" :baseZIndex="10000"  position="right">
 
+    <li class="text-center">Account Balance: GHS {{ store.user.balance || 0 }}</li>
+    <br>
     <div class="d-flex  justify-content-center">
       <a class="text-decoration-none mx-auto">
         <Button label="Deposit" class="p-button-sm p-button-rounded p-button-danger px-5" />
@@ -80,9 +86,10 @@ const logout = () => {
       <br>
       <li><router-link :to="{name: 'home'}" @click="profileSidebar = false">Profile</router-link></li>
       <br>
-      <li>How To Play</li>
+      <li><router-link :to="{name: 'my-tickets'}" @click="profileSidebar = false">My Tickets</router-link></li>
       <br>
-      <li>Results</li>
+      <br>
+<!--      <li><router-link :to="{name: 'transactions'}" @click="profileSidebar = false">Transactions</router-link></li>-->
       <br>
       <li><a class="text-decoration-none" @click="logout" style="cursor: pointer;">
         <b><span class="pi pi-power-off text-danger"></span> Logout</b></a>
@@ -91,6 +98,29 @@ const logout = () => {
   </Sidebar>
 
   <Toast position="center" style="padding: 0;" class="my-toast"/>
+
+<!--  Footer -->
+  <div class="footer bg-dark text-white py-5">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-7 mt-3">
+          <div class="">&copy; All Right Reserved 2022, <span class="text-warning">Nanty </span></div>
+        </div>
+        <div class="col-sm-5 mt-3">
+          <div class="d-flex text-center">
+            <div class="mx-auto">
+              <a><span class="pi pi-facebook" style="font-size: 1.6em"></span></a>
+              <a ><span class="pi pi-youtube mx-4" style="font-size: 1.6em"></span></a>
+              <a ><span class="pi pi-twitter" style="font-size: 1.6em"></span></a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </template>
 
 <style scoped>

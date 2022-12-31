@@ -7,8 +7,6 @@ export const stakeFunction = (selectedNumbers, amount) => {
 
 export const formatNumber = (amount) => {
    const f = new Intl.NumberFormat("en-us", {
-      currency: "GHS",
-      style: "currency",
       maximumFractionDigits: 2
    })
    return f.format(amount);

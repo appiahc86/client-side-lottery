@@ -23,7 +23,7 @@ const closeForm = () => {
 
 //on mounted hook show modal
 onMounted(() => {
-  if (!store.registrationPhoneNumber || !store.pass) return  router.push({name: 'home'}); //Redirect home
+  if (!store.registrationPhoneNumber || !store.pass || store.token) return  router.push({name: 'home'}); //Redirect home
   dialog.value.showModal();
   dialog.value.addEventListener('cancel', (e) => e.preventDefault());
 })
@@ -55,7 +55,7 @@ const registerUser = async () => {
 
     //Send Data To Server
     const response = await  axios.post(
-        '/users/register',
+        '/users/auth/register',
         JSON.stringify({
           phoneNumber: store.registrationPhoneNumber,
           password: store.pass
@@ -64,14 +64,11 @@ const registerUser = async () => {
 
     if (response.status === 201) {
       store.clearRegistrationData();
-      // store.token = response.data.token;
       store.setToken(response.data.token);
 
       router.push({name: 'home'});
       return toast.add({severity:'success', summary: 'Congrats!', detail:'Registration was successful', life: 4000});
     }
-
-
 
 
   }catch (e) {
