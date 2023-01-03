@@ -25,7 +25,6 @@ const logout = () => {
   store.clearUser();
   router.push({name: 'home'});
   toast.add({severity:'success', summary: 'Success', detail: 'You are logged out', life: 4000});
-
   // return router.push({name: 'logout'})
 }
 </script>
@@ -74,17 +73,17 @@ const logout = () => {
     <li class="text-center">Account Balance: GHS {{ store.user.balance || 0 }}</li>
     <br>
     <div class="d-flex  justify-content-center">
-      <a class="text-decoration-none mx-auto">
-        <Button label="Deposit" class="p-button-sm p-button-rounded p-button-danger px-5" />
-      </a> &nbsp;
-      <a class="text-decoration-none mx-auto">
-        <Button label="Withdraw" class="p-button-sm p-button-raised p-button-rounded px-5" />
-      </a>
+      <router-link :to="{name: 'deposit'}" class="text-decoration-none mx-auto">
+        <Button label="Deposit" class="p-button-sm p-button-rounded p-button-danger px-5" @click="profileSidebar = false"/>
+      </router-link> &nbsp;
+      <router-link :to="{name: 'withdrawal'}" class="text-decoration-none mx-auto">
+        <Button label="Withdraw" class="p-button-sm p-button-raised p-button-rounded px-5" @click="profileSidebar = false"/>
+      </router-link>
     </div>
 
     <ul>
       <br>
-      <li><router-link :to="{name: 'home'}" @click="profileSidebar = false">Profile</router-link></li>
+      <li><router-link :to="{name: 'profile'}" @click="profileSidebar = false">Profile</router-link></li>
       <br>
       <li><router-link :to="{name: 'my-tickets'}" @click="profileSidebar = false">My Tickets</router-link></li>
       <br>
@@ -100,7 +99,7 @@ const logout = () => {
   <Toast position="center" style="padding: 0;" class="my-toast"/>
 
 <!--  Footer -->
-  <div class="footer bg-dark text-white py-5">
+  <div class="footer bg-dark text-white py-5 hide-me">
 
     <div class="container">
       <div class="row">
@@ -130,6 +129,7 @@ const logout = () => {
 .register-btn:hover {
   background: #580270 !important;
 }
+
 
 @media screen and (max-width: 500px){
   .my-toast{

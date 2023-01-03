@@ -1,6 +1,10 @@
 import RegisterLogin from "../../views/users/RegisterLogin.vue";
 import VerifyUser from "../../views/users/VerifyUser.vue";
 import Tickets from "../../views/users/Tickets.vue";
+import Profile from "../../views/users/Profile.vue";
+import Deposit from "../../views/users/Deposit.vue";
+import Withdrawal from "../../views/users/Withdrawal.vue";
+
 
 const userRoutes = [
     //         ............................AUTH............................
@@ -25,6 +29,25 @@ const userRoutes = [
         component: Tickets,
         meta: { requiresAuth: true }
     },
+    { //User Profile
+        path: '/users/profile',
+        name: 'profile',
+        component: Profile,
+        meta: { requiresAuth: true }
+    },
+    { //Deposit
+        path: '/users/deposit',
+        name: 'deposit',
+        component: Deposit,
+        meta: { requiresAuth: true }
+    },
+    { //Withdrawal
+        path: '/users/withdrawal',
+        name: 'withdrawal',
+        component: Withdrawal,
+        meta: { requiresAuth: true }
+    },
+
 
 ]
 

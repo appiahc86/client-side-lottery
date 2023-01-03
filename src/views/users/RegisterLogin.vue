@@ -47,6 +47,7 @@ const login = async () => {
     loadingInProgress.value = true;
     loginError.value = "";
     //Validation
+    if (!loginData.phoneNumber) return loginError.value = "Please enter phone number";
     if (loginData.phoneNumber.toString().length  < 9) return loginError.value = "Please check phone number";
     if (!loginData.password.trim()) return loginError.value = "Please provide a password";
     //Send Data To Server
@@ -83,16 +84,15 @@ const requestSMS = async () => {
   try {
     loadingInProgress.value = true;
     registerError.value = "";
-    // const regex = /^(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{6,}$/g;
-    //TODO wrong regex
+
+    const regex = /^(?=.{6,})(?=.*[!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])/
+
 
     //Validation
     if (registerData.phoneNumber.toString().length  < 9) return registerError.value = "Please check phone number";
     if (!registerData.password.trim()) return registerError.value = "Please provide a password";
-    if (registerData.password.length < 6) return registerError.value = "Password length cannot be less than 6 characters";
+    if (!registerData.password.match(regex)) return registerError.value = "Minimum password length should be 6 and contains at least 1 special character";
     if (registerData.password !== registerData.password_confirmation) return registerError.value = "Passwords do not match";
-
-
 
 
     //Send Data To Server
@@ -166,7 +166,7 @@ const requestSMS = async () => {
         </div>
 
         <div class="text-center">
-          <Button label="Login" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border"
+          <Button label="Login" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
                   class="p-button  p-button-rounded mt-2"/>
 
         </div>
@@ -208,7 +208,7 @@ const requestSMS = async () => {
         </div>
 
         <div class="text-center">
-          <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border"
+          <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
                   class="p-button  p-button-rounded mt-2"/>
         </div>
 
@@ -218,10 +218,12 @@ const requestSMS = async () => {
   </TabView>
 
 </dialog>
+<div style="margin-bottom: 600px;"></div>
 </template>
 
 
 <style scoped>
+
 @media screen and (min-width: 500px) {
   #myDialog {
     width: 500px;

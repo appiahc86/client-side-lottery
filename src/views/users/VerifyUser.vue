@@ -110,6 +110,8 @@ const registerUser = async () => {
         </form>
       </div>
   </dialog>
+
+  <div style="margin-bottom: 600px;"></div>
 </template>
 
 

@@ -231,7 +231,7 @@ const stakeNow = async () => {
         <span class="text-danger">{{ formatNumber(payable) }}</span>
       </h4>
       <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
-              :loading="stakeInProgress" loadingIcon="spinner-border"
+              :loading="stakeInProgress" loadingIcon="spinner-border spinner-border-sm"
               v-if="stakeFormData.selectedNumbers.length > 1"
       />
 
