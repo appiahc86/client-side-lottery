@@ -3,6 +3,7 @@ import {onMounted, reactive, ref} from "vue";
 import Button from 'primevue/button';
 import TabPanel from "primevue/tabpanel";
 import TabView from "primevue/tabview";
+import RadioButton from 'primevue/radiobutton';
 import {useRouter} from "vue-router";
 import axios from "../../axios.js";
 import { useHomeStore } from "../../store/home.js";
@@ -21,6 +22,8 @@ const registerData = reactive({ //Registration Form Data
 const loginData = reactive({    // Login Form Data
   phoneNumber: null, password: ""
 })
+
+const selectedNetwork = ref(null);
 
 //Close form
 const closeForm = () => {
@@ -87,25 +90,24 @@ const requestSMS = async () => {
 
     const regex = /^(?=.{6,})(?=.*[!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])/
 
-
     //Validation
-    if (registerData.phoneNumber.toString().length  < 9) return registerError.value = "Please check phone number";
+    if (registerData.phoneNumber.toString().length  !== 9) return registerError.value = "Please check phone number";
     if (!registerData.password.trim()) return registerError.value = "Please provide a password";
     if (!registerData.password.match(regex)) return registerError.value = "Minimum password length should be 6 and contains at least 1 special character";
     if (registerData.password !== registerData.password_confirmation) return registerError.value = "Passwords do not match";
-
+    if (!selectedNetwork.value) return registerError.value = "Please select a service provider";
 
     //Send Data To Server
     const response = await  axios.post(
         '/users/auth/verify',
-        JSON.stringify({...registerData ,password_confirmation: undefined}),
+        JSON.stringify({...registerData, password_confirmation: undefined}),
         // {
         //   headers: { 'Authorization': `Bearer ${store.token}`}
         // }
     )
 
     if (response.status === 200) {
-      store.setRegistrationData(registerData.phoneNumber, registerData.password, response.data.message);
+      store.setRegistrationData(registerData.phoneNumber, registerData.password, selectedNetwork.value, response.data.message);
       return router.push({name: 'verify'});
     }
 
@@ -192,6 +194,40 @@ const requestSMS = async () => {
           <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="registerData.phoneNumber"
                  @input="validatePhoneNumber">
         </div>
+        <br>
+
+        <div class="">
+          <table class="w-100">
+            <tr>
+              <th>
+                <label for="">
+                  <img src="/img/icons/mtn.webp" alt="mtn_logo">
+                  <RadioButton name="network" value="mtn" v-model="selectedNetwork" required/>
+                </label>
+              </th>
+              <th>
+                <label for="">
+                  <img src="/img/icons/vodafone.webp" alt="vodafone_logo">
+                  <RadioButton name="network" value="vodafone" v-model="selectedNetwork" required/>
+                </label>
+              </th>
+              <th>
+                <label for="">
+                  <img src="/img/icons/airteltigo.webp" alt="airteltigo_logo">
+                  <RadioButton name="network" value="airtelTigo" v-model="selectedNetwork" required/>
+                </label>
+              </th>
+            </tr>
+
+            <tr class="">
+              <td>Mtn</td>
+              <td>Vodafon</td>
+              <td>Airteltigo</td>
+            </tr>
+          </table>
+
+
+        </div>
 
           <br>
           <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
@@ -223,6 +259,11 @@ const requestSMS = async () => {
 
 
 <style scoped>
+
+img {
+  width: 37px;
+  margin-right: .5em;
+}
 
 @media screen and (min-width: 500px) {
   #myDialog {

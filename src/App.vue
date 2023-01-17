@@ -7,16 +7,46 @@ import Button from "primevue/button";
 import Avatar from 'primevue/avatar';
 import { useHomeStore } from "./store/home.js";
 import { useToast } from "primevue/usetoast";
+import {formatNumber} from "./functions/index.js";
 import {useRouter} from "vue-router";
+import axios from "./axios.js";
 
 const router = useRouter();
 window.toast = useToast();
 const store = useHomeStore();
+const accountLoading = ref(false);
 
 let visibleLeft = ref(false); // this will toggle the sidebar
 let profileSidebar = ref(false); // this will toggle the sidebar for user profile
 
 // const socket = io('http://localhost:3000');
+
+// reload account balance
+const reloadAccountBalance = async () => {
+  accountLoading.value = true;
+  try {
+    const response = await  axios.get('/users/transactions/balance',
+        {
+          headers: { 'Authorization': `Bearer ${store.token}`}
+         }
+    )
+
+    if (response.status === 200) {
+      return store.user.balance = response.data.balance;
+      // return toast.add({severity:'success', summary: '', detail: 'Account balance reloaded', life: 3500});
+    }
+  }catch (e) {
+    if (e.response.status === 401) return profileSidebar.value = false;
+    if (e.response) return toast.add({severity:'warn', summary: 'Error', detail: `${e.response.data}`, life: 4000});
+    if (e.request && e.request.status === 0) {
+      return toast.add({severity:'error', summary: 'Error',
+        detail: `Sorry, Connection to Server refused. Please check your internet connection or try again later`,
+        life: 4000});
+    }
+    return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, something went wrong. Please try again later',
+      life: 4000});
+  }finally { accountLoading.value = false; }
+}
 
 //Logout
 const logout = () => {
@@ -25,7 +55,6 @@ const logout = () => {
   store.clearUser();
   router.push({name: 'home'});
   toast.add({severity:'success', summary: 'Success', detail: 'You are logged out', life: 4000});
-  // return router.push({name: 'logout'})
 }
 </script>
 
@@ -70,7 +99,10 @@ const logout = () => {
 <!--  User profile sidebar-->
   <Sidebar v-model:visible="profileSidebar" :baseZIndex="10000"  position="right">
 
-    <li class="text-center">Account Balance: GHS {{ store.user.balance || 0 }}</li>
+    <li class="text-center" style="font-size: .8em;">Balance: GHS {{ formatNumber(store.user.balance || 0 ) }} &nbsp;
+      <span class="pi pi-sync" style="cursor: pointer;" title="Refresh" @click="reloadAccountBalance" v-if="!accountLoading"></span>
+      <span class="spinner-border spinner-border-sm" v-if="accountLoading"></span>
+    </li>
     <br>
     <div class="d-flex  justify-content-center">
       <router-link :to="{name: 'deposit'}" class="text-decoration-none mx-auto">

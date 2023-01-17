@@ -8,7 +8,7 @@ import {useHomeStore} from "../store/home.js";
 import router from "../router/index.js";
 
 const store = useHomeStore();
-
+const ads = ref([]);
 const today = new Date().getDay();
 const payable = ref(0);
 //Stake Form Data
@@ -19,10 +19,34 @@ let stakeFormData = reactive({
 const stakeInProgress = ref(false); //Sets loading status when staking lottery
 
 //carousel images
-const ads = ref([
-  {img: "/img/carousel/1.jpg"},
-  {img: "/img/carousel/2.jpg"},
-])
+const getImages = async () => {
+try {
+  const response = await  axios.get('/images',
+      {
+        headers: { 'Authorization': `Bearer ${store.token}`}
+      }
+  )
+
+  if (response.status === 200) {
+    ads.value = response.data;
+  }
+}catch (e) {
+  if (e.response) return  toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
+
+  if (e.request && e.request.status === 0) {
+    return  toast.add({
+      severity:'error', summary: 'Error',
+      detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later',
+      life: 4000});
+  }
+
+  return toast.add({severity:'warn', summary: 'Error',
+    detail: 'Sorry, something went wrong. Please try again later', life: 4000})
+}finally {
+
+}
+}
+getImages();
 
 //On mounted Hook
 onMounted(() => {
@@ -137,7 +161,7 @@ const stakeNow = async () => {
             <div class="product-item">
               <div class="product-item-content">
                 <div class="mb-3">
-                  <img :src="slotProps.data.img" :alt="slotProps.data.img" class="img-fluid w-100"/>
+                  <img :src="slotProps.data.name" alt="image" class="img-fluid w-100"/>
                 </div>
               </div>
             </div>

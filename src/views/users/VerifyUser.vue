@@ -58,11 +58,14 @@ const registerUser = async () => {
         '/users/auth/register',
         JSON.stringify({
           phoneNumber: store.registrationPhoneNumber,
-          password: store.pass
+          password: store.pass,
+          network: store.network
         })
     )
 
     if (response.status === 201) {
+      store.user.network = store.network;
+      store.user.phone = store.registrationPhoneNumber;
       store.clearRegistrationData();
       store.setToken(response.data.token);
 
@@ -77,7 +80,6 @@ const registerUser = async () => {
       return registerError.value = 'Sorry, Connection to Server refused. Please check your internet connection or try again later';
     }
 
-    console.log(e)
     return registerError.value = 'Sorry, something went wrong. Please try again later';
 
   }finally { loadingInProgress.value = false; }

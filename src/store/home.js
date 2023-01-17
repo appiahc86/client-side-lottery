@@ -13,9 +13,10 @@ export const useHomeStore = defineStore('homeStore', {
         return {
             registrationPhoneNumber: null,
             pass: "",
+            network: "",
             verificationCode: null,
             user: {},
-            token: ""
+            token: "",
          }
     },
 
@@ -26,17 +27,19 @@ export const useHomeStore = defineStore('homeStore', {
     actions: {
 
       //Set registration data
-     setRegistrationData (num, password, vCode){
+     setRegistrationData (num, password, network, vCode){
         this.registrationPhoneNumber = num;
         this.pass = password;
         this.verificationCode = vCode;
+        this.network = network;
     },
 
         //Clear registration data
      clearRegistrationData(){
         this.registrationPhoneNumber = null;
         this.pass = '';
-        this.verificationCode = null
+        this.verificationCode = null;
+        this.network = '';
     },
 
         //Set Token
@@ -56,7 +59,7 @@ export const useHomeStore = defineStore('homeStore', {
     persist: {
        key: '_loda',
             storage: sessionStorage,
-            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user'],
+            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user', 'network'],
             serializer: {
                 deserialize: parse,
                 serialize: stringify

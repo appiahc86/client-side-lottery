@@ -1,8 +1,9 @@
 <script setup>
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
 import {useHomeStore} from "../../store/home.js";
+import axios from "../../axios.js";
 
 const amount = ref();
 const loadingInProgress = ref(false);
@@ -12,18 +13,53 @@ const networks = ref([
   {name: 'Vodafone', value: 'vodafone', icon: '/img/icons/vodafone.webp'},
   {name: 'Airtel Tigo', value: 'airtelTigo', icon: '/img/icons/airteltigo.webp'}
 ])
-const selectedNetwork = ref( {name: 'Mtn', value: 'mtn', icon: '/img/icons/mtn.webp'})
+const selectedNetwork = ref({name: 'Please Select Network', value: '', icon: ''});
 
 
-//................Submit withdrawal request......................
+onMounted(() => {
+  const network = store.user.network;
+  if (network) {
+    const nn = networks.value.filter(net => {
+      return net.value === network;
+    })
+
+    selectedNetwork.value = nn[0];
+  }
+})
+
+
+//................Submit Deposit request......................
 const deposit = async () => {
   try {
     loadingInProgress.value = true
+    //Validation
+    if (!selectedNetwork.value.value) return toast.add({severity:'warn', summary: 'Error',
+      detail: `Please select Service provider`, life: 4000});
 
+    //Send Data To Server
+    const response = await  axios.post(
+        '/users/transactions/deposit',
+        JSON.stringify({amount: amount.value, network: selectedNetwork.value.value, transactionType: 'deposit'}),
+        {
+          headers: { 'Authorization': `Bearer ${store.token}`}
+        }
+    )
+
+    if (response.status === 200) {
+      amount.value = null;
+    }
 
   }catch (e) {
+    if (e.response) return toast.add({severity:'warn', summary: 'Error', detail: `${e.response.data}`, life: 4000});
+    if (e.request && e.request.status === 0) {
+      return toast.add({severity:'error', summary: 'Error',
+        detail: `Sorry, Connection to Server refused. Please check your internet connection or try again later`,
+        life: 4000});
+    }
 
-  }finally {  setTimeout(()=>{loadingInProgress.value = false}, 4000) }
+    return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, something went wrong. Please try again later',
+      life: 4000});
+  }finally { loadingInProgress.value = false; console.clear() }
 }
 
 </script>
@@ -35,8 +71,8 @@ const deposit = async () => {
     <div class="row justify-content-center">
       <div class="col-sm-6 col-md-5">
         <form  @submit.prevent="deposit">
-          <input type="text" class="p-inputtext w-100 p-disabled" :value="store.user.phone" disabled><br><br>
-          <Dropdown v-model="selectedNetwork" :options="networks" optionLabel="name" class="w-100">
+          <input type="text" class="p-inputtext w-100 p-disabled rounded-pill px-3" :value="store.user.phone" disabled><br><br>
+          <Dropdown v-model="selectedNetwork" :options="networks" optionLabel="name" class="w-100 rounded-pill px-2">
             <template #value="slotProps">
               <div class="d-flex">
                 <img :src="slotProps.value.icon" />
@@ -53,7 +89,7 @@ const deposit = async () => {
           </Dropdown><br><br>
           <div class="field">
             <input type="number" v-model.number="amount" min="1" aria-describedby="username2-help"
-                   class="p-inputtext w-100" placeholder="Amount">
+                   class="p-inputtext w-100 rounded-pill px-3" placeholder="Amount" required>
 <!--            <small id="username2-help" class="text-muted">Minimum withdraw amount is GHS 1.00</small>-->
           </div>
           <div class="text-center">

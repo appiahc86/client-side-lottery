@@ -24,7 +24,7 @@ const getData = async () => {
     if (response.status === 200) {
       data.value = response.data.data;
       data.value.map(item => {
-        item.numbers = item.numbers.replace("[", "").replace("]", "");
+        item.numbers = JSON.parse(item.numbers);
       })
     }
 
@@ -78,7 +78,7 @@ getData();
             <Column field="numbers" header="Numbers" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  {{ data.numbers }}
+                  {{ data.numbers.toString()  }}
                 </td>
               </template>
             </Column>
