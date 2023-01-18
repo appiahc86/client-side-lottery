@@ -44,6 +44,11 @@ const validatePhoneNumber = (e) => {
   e.target.value = e.target.value.replace(/(\..*)\./g, '$1');
 }
 
+//Tab change
+const tabChanged = (event) => {
+  console.log(event)
+}
+
                     //..............Login..................
 const login = async () => {
   try {
@@ -179,7 +184,7 @@ const requestSMS = async () => {
     </TabPanel>
 
     <!--  Register  -->
-    <TabPanel header="Register">
+    <TabPanel header="Register" @tab-change="tabChanged($event)">
 
       <form @submit.prevent="requestSMS">
         <template v-if="registerError">
