@@ -65,9 +65,10 @@ getData();
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >
             <template #loading>
-              Loading Tickets data. Please wait.
+              <h6 class="text-white fw-bold">Loading Tickets Please wait. <span class="spinner-border spinner-border-sm"></span></h6>
+
             </template>
-            <Column field="ticketId" header="Ticket ID" class="data-table-font-size"></Column>
+            <Column field="id" header="Ticket ID" class="data-table-font-size"></Column>
             <Column field="ticketDate" header="Date" class="data-table-font-size">
               <template #body="{data}">
                 <td>

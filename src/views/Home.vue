@@ -156,7 +156,7 @@ const stakeNow = async () => {
                 <!-- ........... Carousel ............... -->
   <div style="margin-top: 48px !important;">
         <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
-                  :autoplayInterval="4000">
+                 :showIndicators="false" :autoplayInterval="4000">
           <template #item="slotProps">
             <div class="product-item">
               <div class="product-item-content">
@@ -219,10 +219,10 @@ const stakeNow = async () => {
 
                 <!-- ............. Numbers ............... -->
     <div class="row justify-content-center">
-      <div class="col p-3" style="background: #ccc;">
+      <div class="col p-3" style="background: rgba(231,101,239,0.61);">
 
           <h6>You Cannot Select More Than 10 Numbers</h6>
-          <div class="numbers-ball-container" @click="numberSelection">
+          <div class="numbers-ball-container">
             <template v-for="num in 90">
               <div class="numbers-ball">{{ num }}</div>
             </template>

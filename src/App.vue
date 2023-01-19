@@ -48,6 +48,8 @@ const reloadAccountBalance = async () => {
   }finally { accountLoading.value = false; }
 }
 
+
+
 //Logout
 const logout = () => {
   profileSidebar.value = false;
@@ -71,7 +73,7 @@ const logout = () => {
         </router-link>
 
         <Avatar icon="pi pi-user" class="mr-2" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
-               v-if="store.token" shape="circle" @click="profileSidebar = true"/>
+               v-if="store.token" shape="circle" @click="profileSidebar = true;"/>
 
       </div>
     </div>
@@ -136,7 +138,7 @@ const logout = () => {
     <div class="container">
       <div class="row">
         <div class="col-sm-7 mt-3">
-          <div class="">&copy; All Right Reserved 2022, <span class="text-warning">Nanty </span></div>
+          <div class="">&copy; All Right Reserved 2023, <span class="text-warning">Nanty </span></div>
         </div>
         <div class="col-sm-5 mt-3">
           <div class="d-flex text-center">
