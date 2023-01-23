@@ -1,16 +1,24 @@
 <script setup>
-import {onMounted, reactive, ref, watch} from "vue";
+import {computed, onMounted, reactive, ref, watch} from "vue";
 import Carousel from 'primevue/carousel';
 import Button from 'primevue/button';
 import axios from "../axios.js";
-import { stakeFunction, formatNumber } from "../functions/index.js";
+import { stakeFunction, formatNumber, gameDescription } from "../functions/index.js";
 import {useHomeStore} from "../store/home.js";
 import router from "../router/index.js";
+import { useHomeNonPersistStore } from "@/store/homeNonPersist";
 
+const nonPersistStore = useHomeNonPersistStore();
 const store = useHomeStore();
-const ads = ref([]);
-const today = new Date().getDay();
 const payable = ref(0);
+const loading = ref(false);
+
+const today = computed(() => nonPersistStore.getDay);
+const ads = computed(() => nonPersistStore.getImages);
+const drawResults = computed(() => nonPersistStore.getDrawResults);
+const gameDay  = computed(() => nonPersistStore.getGameDay);
+
+
 //Stake Form Data
 let stakeFormData = reactive({
   amountToStake: null, selectedNumbers: []
@@ -18,7 +26,29 @@ let stakeFormData = reactive({
 
 const stakeInProgress = ref(false); //Sets loading status when staking lottery
 
-//carousel images
+
+//this function will get current game results from server
+const getDrawResults = async () => {
+  try {
+    const response = await axios.get('/game-results');
+    if (response.status === 200){
+      nonPersistStore.setDrawResults(response.data.gameResults);
+      nonPersistStore.setDay(response.data.day);
+    }
+  }catch (e) {
+    if (e.response) return toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
+
+    if (e.request && e.request.status === 0) {
+      return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later', life: 4000});
+    }
+    return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, something went wrong. Please try reloading', life: 4000});
+
+  }finally { loading.value = false }
+}
+//Load images from db if pinia store is empty
+if (!drawResults.value.length)getDrawResults();
+
+// this function will get carousel images
 const getImages = async () => {
 try {
   const response = await  axios.get('/images',
@@ -28,7 +58,8 @@ try {
   )
 
   if (response.status === 200) {
-    ads.value = response.data;
+    nonPersistStore.setImages(response.data.images);
+    nonPersistStore.setDay(response.data.day);
   }
 }catch (e) {
   if (e.response) return  toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
@@ -42,11 +73,12 @@ try {
 
   return toast.add({severity:'warn', summary: 'Error',
     detail: 'Sorry, something went wrong. Please try again later', life: 4000})
-}finally {
+}
+}
 
-}
-}
-getImages();
+//Load images from db if pinia store is empty
+if (!ads.value.length)getImages();
+
 
 //On mounted Hook
 onMounted(() => {
@@ -159,17 +191,29 @@ const stakeNow = async () => {
       <div class="container">
         <div class="row header-row">
           <div class="col align-self-center main-title text-center">
-            <h1 class="text-white"><b>Friday Bonanza</b></h1>
 
-            <div class="d-inline-flex text-center">
-              <h1 class="result-numbers">34</h1>
-              <h1 class="result-numbers">78</h1>
-              <h1 class="result-numbers">4</h1>
-              <h1 class="result-numbers">86</h1>
-              <h1 class="result-numbers">30</h1>
-            </div>
+            <template v-if="loading">
+              <h4 class="text-white">Loading Game Results.....
+                <span class="spinner-border spinner-border-sm"></span>
+              </h4>
+            </template>
 
-<!--            <a class="white-link" href="#" target="_blank"> Open Website<i class="fas fa-chevron-right"></i></a>-->
+            <template v-if="drawResults.length">
+                          <h1 class="text-white"><b>{{ gameDay ? gameDescription(gameDay) : '' }}</b></h1>
+
+                          <div class="d-inline-flex text-center">
+                            <h1 class="result-numbers">{{ drawResults[0] }}</h1>
+                            <h1 class="result-numbers">{{ drawResults[1] }}</h1>
+                            <h1 class="result-numbers">{{ drawResults[2] }}</h1>
+                            <h1 class="result-numbers">{{ drawResults[3] }}</h1>
+                            <h1 class="result-numbers">{{ drawResults[4] }}</h1>
+                          </div>
+            </template>
+            <template v-else>
+              <h4 class="text-white">Welcome to Nanty</h4>
+            </template>
+
+
           </div>
         </div>
       </div>
@@ -204,31 +248,31 @@ const stakeNow = async () => {
           <div class="card-body">
             <div class="game-images-wrapper">
 
-              <div class="game-image" :class="today === 1 ? 'active-day' : ''">
+              <div class="game-image" :class="nonPersistStore.day === 1 ? 'active-day' : ''">
                 <img src="../../public/img/days/monday-special.png" alt="monday-special" class="img-fluid" :class="today !== 1 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="today === 2 ? 'active-day' : ''">
+              <div class="game-image" :class="nonPersistStore.day === 2 ? 'active-day' : ''">
                 <img src="../../public/img/days/lucky-tuesday.png" alt="lucky-tuesday" class="img-fluid"  :class="today !== 2 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image"  :class="today === 3 ? 'active-day' : ''">
+              <div class="game-image"  :class="nonPersistStore.day === 3 ? 'active-day' : ''">
                 <img src="../../public/img/days/mid-week.png" alt="mid-week" class="img-fluid" :class="today !== 3 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="today === 4 ? 'active-day' : ''">
+              <div class="game-image" :class="nonPersistStore.day === 4 ? 'active-day' : ''">
                 <img src="../../public/img/days/fortune-thursday.png" alt="fortune-thursday" class="img-fluid" :class="today !== 4 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="today === 5 ? 'active-day' : ''">
+              <div class="game-image" :class="nonPersistStore.day === 5 ? 'active-day' : ''">
                 <img src="../../public/img/days/friday-bonanza.png" alt="friday-bonanza" class="img-fluid" :class="today !== 5 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="today === 6 ? 'active-day' : ''">
+              <div class="game-image" :class="nonPersistStore.day === 6 ? 'active-day' : ''">
                 <img src="../../public/img/days/national-weekly-lotto.png" alt="national-weekly-lotto" class="img-fluid" :class="today !== 6 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image"  :class="today === 0 ? 'active-day' : ''">
+              <div class="game-image"  :class="nonPersistStore.day === 0 ? 'active-day' : ''">
                 <img src="../../public/img/days/sunday-aseda.png" alt="sunday-aseda" class="img-fluid" :class="today !== 0 ? 'img-faded' : ''">
               </div>
 
@@ -288,6 +332,7 @@ const stakeNow = async () => {
     </form>
   </div>
 
+  <h1>{{ gameDay }}</h1>
 
 </template>
 
