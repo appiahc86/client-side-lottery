@@ -152,21 +152,44 @@ const stakeNow = async () => {
 </script>
 
 <template>
+  <div style="">
 
-                <!-- ........... Carousel ............... -->
-  <div style="margin-top: 48px !important;">
-        <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
-                 :showIndicators="false" :autoplayInterval="4000">
-          <template #item="slotProps">
-            <div class="product-item">
-              <div class="product-item-content">
-                <div class="mb-3">
-                  <img :src="slotProps.data.name" alt="image" class="img-fluid w-100"/>
-                </div>
-              </div>
+      <!--    Header  -->
+    <header class="header-blog bg-animation" style="margin-top: 48px;">
+      <div class="container">
+        <div class="row header-row">
+          <div class="col align-self-center main-title text-center">
+            <h1 class="text-white"><b>Friday Bonanza</b></h1>
+
+            <div class="d-inline-flex text-center">
+              <h1 class="result-numbers">34</h1>
+              <h1 class="result-numbers">78</h1>
+              <h1 class="result-numbers">4</h1>
+              <h1 class="result-numbers">86</h1>
+              <h1 class="result-numbers">30</h1>
             </div>
-          </template>
-        </Carousel>
+
+<!--            <a class="white-link" href="#" target="_blank"> Open Website<i class="fas fa-chevron-right"></i></a>-->
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ........... Carousel ............... -->
+    <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
+              :showIndicators="false" :autoplayInterval="4000">
+      <template #item="slotProps">
+        <div class="product-item">
+          <div class="product-item-content">
+            <div class="mb-3">
+              <img :src="slotProps.data.name" alt="image" class="img-fluid w-100"/>
+            </div>
+          </div>
+        </div>
+      </template>
+    </Carousel>
+
+
   </div>
   <br>
   <div class="container">
@@ -182,31 +205,31 @@ const stakeNow = async () => {
             <div class="game-images-wrapper">
 
               <div class="game-image" :class="today === 1 ? 'active-day' : ''">
-                <img src="/img/days/monday-special.png" alt="monday-special" class="img-fluid" :class="today !== 1 ? 'img-faded' : ''">
+                <img src="../../public/img/days/monday-special.png" alt="monday-special" class="img-fluid" :class="today !== 1 ? 'img-faded' : ''">
               </div>
 
               <div class="game-image" :class="today === 2 ? 'active-day' : ''">
-                <img src="/img/days/lucky-tuesday.png" alt="lucky-tuesday" class="img-fluid"  :class="today !== 2 ? 'img-faded' : ''">
+                <img src="../../public/img/days/lucky-tuesday.png" alt="lucky-tuesday" class="img-fluid"  :class="today !== 2 ? 'img-faded' : ''">
               </div>
 
               <div class="game-image"  :class="today === 3 ? 'active-day' : ''">
-                <img src="/img/days/mid-week.png" alt="mid-week" class="img-fluid" :class="today !== 3 ? 'img-faded' : ''">
+                <img src="../../public/img/days/mid-week.png" alt="mid-week" class="img-fluid" :class="today !== 3 ? 'img-faded' : ''">
               </div>
 
               <div class="game-image" :class="today === 4 ? 'active-day' : ''">
-                <img src="/img/days/fortune-thursday.png" alt="fortune-thursday" class="img-fluid" :class="today !== 4 ? 'img-faded' : ''">
+                <img src="../../public/img/days/fortune-thursday.png" alt="fortune-thursday" class="img-fluid" :class="today !== 4 ? 'img-faded' : ''">
               </div>
 
               <div class="game-image" :class="today === 5 ? 'active-day' : ''">
-                <img src="/img/days/friday-bonanza.png" alt="friday-bonanza" class="img-fluid" :class="today !== 5 ? 'img-faded' : ''">
+                <img src="../../public/img/days/friday-bonanza.png" alt="friday-bonanza" class="img-fluid" :class="today !== 5 ? 'img-faded' : ''">
               </div>
 
               <div class="game-image" :class="today === 6 ? 'active-day' : ''">
-                <img src="/img/days/national-weekly-lotto.png" alt="national-weekly-lotto" class="img-fluid" :class="today !== 6 ? 'img-faded' : ''">
+                <img src="../../public/img/days/national-weekly-lotto.png" alt="national-weekly-lotto" class="img-fluid" :class="today !== 6 ? 'img-faded' : ''">
               </div>
 
               <div class="game-image"  :class="today === 0 ? 'active-day' : ''">
-                <img src="/img/days/sunday-aseda.png" alt="sunday-aseda" class="img-fluid" :class="today !== 0 ? 'img-faded' : ''">
+                <img src="../../public/img/days/sunday-aseda.png" alt="sunday-aseda" class="img-fluid" :class="today !== 0 ? 'img-faded' : ''">
               </div>
 
             </div>
@@ -219,9 +242,9 @@ const stakeNow = async () => {
 
                 <!-- ............. Numbers ............... -->
     <div class="row justify-content-center">
-      <div class="col p-3" style="background: rgba(231,101,239,0.61);">
+      <div class="col p-3" style="background: rgb(84,77,150);">
 
-          <h6>You Cannot Select More Than 10 Numbers</h6>
+          <h6 class="text-white">You Cannot Select More Than 10 Numbers</h6>
           <div class="numbers-ball-container">
             <template v-for="num in 90">
               <div class="numbers-ball">{{ num }}</div>
@@ -266,8 +289,6 @@ const stakeNow = async () => {
   </div>
 
 
-  <br><br><br><br>
-
 </template>
 
 <style scoped>
@@ -279,7 +300,7 @@ const stakeNow = async () => {
   flex-direction: row;
   flex-wrap: wrap;
 }
-.numbers-ball, .numbers-ball-selected {
+.numbers-ball, .numbers-ball-selected, .result-numbers {
   cursor: pointer;
   background-color: #fff;
   width: 35px;
@@ -325,5 +346,99 @@ const stakeNow = async () => {
 }
 .active-day {
   background: greenyellow;
+}
+
+
+/* Header styles*/
+
+.result-numbers{
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  font-weight: normal;
+  height: 1.8em;
+  width: 1.8em;
+  font-size: 1.5em;
+  border-radius: 50px;
+}
+.result-numbers:hover{
+  background: transparent;
+}
+
+@media screen and (min-width: 500px) {
+.result-numbers{
+  height: 2em;
+  width: 2em;
+  font-size: 2em;
+}
+}
+
+body{
+  margin:0;
+  padding:0;
+  background-color:#fafafa;
+}
+
+.header-blog .container {
+  position: relative;
+  height: 100%;
+}
+
+.header-blog {
+  background-image: url("../../public/img/cover.jpg");
+}
+
+.header-blog {
+  height: 50vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-box-shadow: 0 15px 30px 0 rgba(5, 16, 44, .15);
+  box-shadow: 0 15px 30px 0 rgba(5, 16, 44, .15);
+}
+
+
+.bg-animation {
+  -webkit-animation: bg-animation 8s ease-in-out infinite;
+  animation: bg-animation 8s ease-in-out infinite;
+}
+
+
+header{
+  display:block;
+}
+
+.header-blog .container {
+  position: relative;
+  height: 100%;
+}
+
+.header-row {
+  height: 100%;
+}
+
+@-webkit-keyframes bg-animation {
+  0% {
+    background-position: top;
+  }
+
+  50% {
+    background-position: bottom;
+  }
+  100% {
+    background-position: top;
+  }
+}
+
+@keyframes bg-animation {
+  0% {
+    background-position: top;
+  }
+
+  50% {
+    background-position: bottom;
+  }
+  100% {
+    background-position: top;
+  }
 }
 </style>

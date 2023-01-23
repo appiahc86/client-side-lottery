@@ -1,4 +1,5 @@
 import RegisterLogin from "../../views/users/RegisterLogin.vue";
+import ForgotPassword from "../../views/users/ForgotPassword.vue";
 import VerifyUser from "../../views/users/VerifyUser.vue";
 import Tickets from "../../views/users/Tickets.vue";
 import Profile from "../../views/users/Profile.vue";
@@ -19,7 +20,11 @@ const userRoutes = [
         component: VerifyUser
     },
 
-
+    {  //forgot password
+        path: '/users/forgot-password',
+        name: 'forgot-password',
+        component: ForgotPassword
+    },
 
     //...................................             ...................................
 

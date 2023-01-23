@@ -50,7 +50,7 @@ getData();
 </script>
 
 <template>
-<h1 class="pt-5 mt-3 text-center">My Tickets</h1>
+<h3 class="pt-5 mt-3 text-center">My Tickets</h3>
 
   <div class="container-fluid">
     <div class="row">
@@ -98,8 +98,8 @@ getData();
     </div>
   </div>
 
-<!-- TODO clear this code-->
-  <div style="margin-bottom: 200px"></div>
+
+
 </template>
 
 

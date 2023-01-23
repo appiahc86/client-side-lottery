@@ -104,8 +104,6 @@ const withdraw = async () => {
 
   </div>
 
-
-  <h3 style="margin-bottom: 400px" class="text-white">...........</h3>
 </template>
 
 <style scoped>

@@ -4,14 +4,15 @@ import Button from 'primevue/button';
 import TabPanel from "primevue/tabpanel";
 import TabView from "primevue/tabview";
 import RadioButton from 'primevue/radiobutton';
-import {useRouter} from "vue-router";
+import {onBeforeRouteLeave, useRouter} from "vue-router";
 import axios from "../../axios.js";
 import { useHomeStore } from "../../store/home.js";
 
+const closeModal = ref();
+const openModal = ref();
 const store = useHomeStore();
 const router = useRouter();
 const showPassword = ref(false);
-const dialog = ref();
 const registerError = ref('');
 const loginError = ref('');
 const loadingInProgress = ref(false);
@@ -25,17 +26,17 @@ const loginData = reactive({    // Login Form Data
 
 const selectedNetwork = ref(null);
 
-//Close form
-const closeForm = () => {
-  dialog.value.close();
-  router.push({name: 'home'})
-}
 
 //on mounted hook show modal
 onMounted(() => {
 if (store.token) return router.push({name: 'home'});
-dialog.value.showModal();
-dialog.value.addEventListener('cancel', (e) => e.preventDefault());
+  openModal.value.click();
+})
+
+//Close modal before leaving this page
+onBeforeRouteLeave( (to, from, next) => {
+  closeModal.value.click();
+  next();
 })
 
 //Validate phone number
@@ -131,130 +132,153 @@ const requestSMS = async () => {
 </script>
 
 <template>
-<dialog ref="dialog" id="myDialog" class="border-0 p-1">
 
-  <button style="float: right; margin-left: 10px; width: 30px;" class="text-white bg-danger border-0 fw-bold"
-          @click="closeForm" title="Close">X</button>
-  You may click on the close button to exit this page
-  <br><br>
+<!--  this button launches the modal -->
+  <button type="button" ref="openModal" class="d-none mt-5 mb-5" data-bs-toggle="modal" data-bs-target="#authModal"></button>
+
+  <!-- Modal -->
+  <div class="modal" id="authModal" tabindex="-1" data-bs-keyboard="false" aria-labelledby="authModal" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="container-fluid mt-3">
+            <div class="row justify-content-center">
+              <div class="col-md-6 col-lg-5 col-xl-4">
+
+                <button style="float: right; margin-left: 10px; width: 30px;"
+                        class="text-white bg-danger border-0 fw-bold float-end"
+                        @click="router.push({name: 'home'})" title="Close">X</button>&nbsp;
+                <span class="float-end">Click here to close </span>
+
+                <br><br>
+
+                <div class="card shadow">
+                <TabView>
+
+                  <!--   Login -->
+                  <TabPanel header="Login">
+                    <form @submit.prevent="login">
+                      <template v-if="loginError">
+                        <p class="text-danger text-center" id="errorMessage">{{ loginError }}</p>
+                      </template>
+                      Please Enter Phone Number
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">+233</div>
+                        </div>
+                        <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="loginData.phoneNumber"
+                               @input="validatePhoneNumber">
+                      </div>
+
+                      <br>
+                      <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                             v-model="loginData.password" placeholder="Password">
+
+                      <div class="form-check mt-3">
+                        <input class="form-check-input" id="showPassword" type="checkbox" v-model="showPassword">
+                        <label class="form-check-label" for="showPassword">
+                          Show Password
+                        </label>
+                      </div>
+
+                      <div class="text-center">
+                        <Button label="Login" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
+                                class="p-button  p-button-rounded mt-2"/>
+
+                      </div>
+
+                    </form>
+                    <br>
+                    <h6>Forgot your password? click <router-link :to="{name: 'forgot-password'}">here</router-link></h6>
+                  </TabPanel>
+
+                  <!--  Register  -->
+                  <TabPanel header="Register">
+
+                    <form @submit.prevent="requestSMS">
+                      <template v-if="registerError">
+                        <p class="text-danger text-center" id="errorMessage">{{ registerError }}</p>
+                      </template>
+
+                      Register with your momo number
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">+233</div>
+                        </div>
+                        <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="registerData.phoneNumber"
+                               @input="validatePhoneNumber">
+                      </div>
+                      <br>
+
+                      <div class="">
+                        <table class="w-100">
+                          <tr>
+                            <th>
+                              <label for="">
+                                <img src="/img/icons/mtn.webp" alt="mtn_logo">
+                                <RadioButton name="network" value="mtn" v-model="selectedNetwork" required/>
+                              </label>
+                            </th>
+                            <th>
+                              <label for="">
+                                <img src="/img/icons/vodafone.webp" alt="vodafone_logo">
+                                <RadioButton name="network" value="vodafone" v-model="selectedNetwork" required/>
+                              </label>
+                            </th>
+                            <th>
+                              <label for="">
+                                <img src="/img/icons/airteltigo.webp" alt="airteltigo_logo">
+                                <RadioButton name="network" value="airtelTigo" v-model="selectedNetwork" required/>
+                              </label>
+                            </th>
+                          </tr>
+
+                          <tr class="">
+                            <td>Mtn</td>
+                            <td>Vodafon</td>
+                            <td>Airteltigo</td>
+                          </tr>
+                        </table>
 
 
-  <TabView>
+                      </div>
 
-    <!--   Login -->
-    <TabPanel header="Login">
-      <form @submit.prevent="login">
-        <template v-if="loginError">
-          <p class="text-danger text-center" id="errorMessage">{{ loginError }}</p>
-        </template>
-        Please Enter Phone Number
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">+233</div>
+                      <br>
+                      <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                             v-model="registerData.password" placeholder="Password">
+                      <br>
+                      <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                             v-model="registerData.password_confirmation" placeholder="Confirm Password">
+
+                      <div class="form-check mt-3">
+                        <input class="form-check-input" id="showRegisterPassword" type="checkbox" v-model="showPassword">
+                        <label class="form-check-label" for="showRegisterPassword">
+                          Show Password
+                        </label>
+                      </div>
+
+                      <div class="text-center">
+                        <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
+                                class="p-button  p-button-rounded mt-2"/>
+                      </div>
+
+                    </form>
+                  </TabPanel>
+
+                </TabView>
+              </div>
+
+              </div>
+            </div>
           </div>
-          <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="loginData.phoneNumber"
-                 @input="validatePhoneNumber">
+
+          <!-- this button closes the modal -->
+          <button type="button" class="d-none" data-bs-dismiss="modal" ref="closeModal"></button>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <br>
-        <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-               v-model="loginData.password" placeholder="Password">
-
-        <div class="form-check mt-3">
-          <input class="form-check-input" id="showPassword" type="checkbox" v-model="showPassword">
-          <label class="form-check-label" for="showPassword">
-            Show Password
-          </label>
-        </div>
-
-        <div class="text-center">
-          <Button label="Login" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
-                  class="p-button  p-button-rounded mt-2"/>
-
-        </div>
-
-      </form>
-      <br>
-      <h6>Forgot your password? click <a href="#">here</a></h6>
-    </TabPanel>
-
-    <!--  Register  -->
-    <TabPanel header="Register">
-
-      <form @submit.prevent="requestSMS">
-        <template v-if="registerError">
-          <p class="text-danger text-center" id="errorMessage">{{ registerError }}</p>
-        </template>
-
-        Register with your momo number
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">+233</div>
-          </div>
-          <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="registerData.phoneNumber"
-                 @input="validatePhoneNumber">
-        </div>
-        <br>
-
-        <div class="">
-          <table class="w-100">
-            <tr>
-              <th>
-                <label for="">
-                  <img src="/img/icons/mtn.webp" alt="mtn_logo">
-                  <RadioButton name="network" value="mtn" v-model="selectedNetwork" required/>
-                </label>
-              </th>
-              <th>
-                <label for="">
-                  <img src="/img/icons/vodafone.webp" alt="vodafone_logo">
-                  <RadioButton name="network" value="vodafone" v-model="selectedNetwork" required/>
-                </label>
-              </th>
-              <th>
-                <label for="">
-                  <img src="/img/icons/airteltigo.webp" alt="airteltigo_logo">
-                  <RadioButton name="network" value="airtelTigo" v-model="selectedNetwork" required/>
-                </label>
-              </th>
-            </tr>
-
-            <tr class="">
-              <td>Mtn</td>
-              <td>Vodafon</td>
-              <td>Airteltigo</td>
-            </tr>
-          </table>
-
-
-        </div>
-
-          <br>
-          <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                v-model="registerData.password" placeholder="Password">
-          <br>
-          <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                v-model="registerData.password_confirmation" placeholder="Confirm Password">
-
-        <div class="form-check mt-3">
-          <input class="form-check-input" id="showRegisterPassword" type="checkbox" v-model="showPassword">
-          <label class="form-check-label" for="showRegisterPassword">
-            Show Password
-          </label>
-        </div>
-
-        <div class="text-center">
-          <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
-                  class="p-button  p-button-rounded mt-2"/>
-        </div>
-
-      </form>
-    </TabPanel>
-
-  </TabView>
-
-</dialog>
-<div style="margin-bottom: 600px;"></div>
 </template>
 
 

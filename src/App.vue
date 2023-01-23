@@ -62,7 +62,7 @@ const logout = () => {
 
 <template>
 
-  <nav class="navbar navbar-expand-lg bg-light fixed-top" style="height: 48px">
+  <nav class="navbar navbar-expand-lg bg-light fixed-top" style="height: 48px;">
     <div class="container-fluid">
       <h4 class="navbar-brand mb-0 h1 pi pi-list" @click="visibleLeft = true"></h4>
       <div class="dropdown">
@@ -116,14 +116,10 @@ const logout = () => {
     </div>
 
     <ul>
-      <br>
-      <li><router-link :to="{name: 'profile'}" @click="profileSidebar = false">Profile</router-link></li>
-      <br>
-      <li><router-link :to="{name: 'my-tickets'}" @click="profileSidebar = false">My Tickets</router-link></li>
-      <br>
-      <br>
+      <li class="my-3"><router-link :to="{name: 'my-tickets'}" @click="profileSidebar = false">My Tickets</router-link></li>
+
 <!--      <li><router-link :to="{name: 'transactions'}" @click="profileSidebar = false">Transactions</router-link></li>-->
-      <br>
+
       <li><a class="text-decoration-none" @click="logout" style="cursor: pointer;">
         <b><span class="pi pi-power-off text-danger"></span> Logout</b></a>
       </li>
@@ -132,8 +128,9 @@ const logout = () => {
 
   <Toast position="center" style="padding: 0;" class="my-toast"/>
 
+  <br><br><br><br><br><br>
 <!--  Footer -->
-  <div class="footer bg-dark text-white py-5 hide-me">
+  <footer class="navbar fixed-bottom bg-dark text-white">
 
     <div class="container">
       <div class="row">
@@ -153,7 +150,7 @@ const logout = () => {
       </div>
     </div>
 
-  </div>
+  </footer>
 </template>
 
 <style scoped>

@@ -17,6 +17,7 @@ export const useHomeStore = defineStore('homeStore', {
             verificationCode: null,
             user: {},
             token: "",
+            passwordResetCode: null
          }
     },
 
@@ -59,7 +60,7 @@ export const useHomeStore = defineStore('homeStore', {
     persist: {
        key: '_loda',
             storage: sessionStorage,
-            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user', 'network'],
+            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user', 'network', 'passwordResetCode'],
             serializer: {
                 deserialize: parse,
                 serialize: stringify
