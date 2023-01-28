@@ -118,7 +118,7 @@ const logout = () => {
     <ul>
       <li class="my-3"><router-link :to="{name: 'my-tickets'}" @click="profileSidebar = false">My Tickets</router-link></li>
 
-<!--      <li><router-link :to="{name: 'transactions'}" @click="profileSidebar = false">Transactions</router-link></li>-->
+      <li class="mb-3"><router-link :to="{name: 'transactions'}" @click="profileSidebar = false">Transactions</router-link></li>
 
       <li><a class="text-decoration-none" @click="logout" style="cursor: pointer;">
         <b><span class="pi pi-power-off text-danger"></span> Logout</b></a>

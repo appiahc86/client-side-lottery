@@ -5,6 +5,7 @@ import Tickets from "../../views/users/Tickets.vue";
 import Profile from "../../views/users/Profile.vue";
 import Deposit from "../../views/users/Deposit.vue";
 import Withdrawal from "../../views/users/Withdrawal.vue";
+import Transactions from "../../views/users/Transactions.vue";
 
 
 const userRoutes = [
@@ -26,7 +27,7 @@ const userRoutes = [
         component: ForgotPassword
     },
 
-    //...................................             ...................................
+    //...................................     others        ...................................
 
     { //User stake
         path: '/users/my-tickets',
@@ -52,7 +53,12 @@ const userRoutes = [
         component: Withdrawal,
         meta: { requiresAuth: true }
     },
-
+    { //Transactions
+        path: '/users/transactions',
+        name: 'transactions',
+        component: Transactions,
+        meta: { requiresAuth: true }
+    },
 
 ]
 

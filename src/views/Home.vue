@@ -187,37 +187,45 @@ const stakeNow = async () => {
   <div style="">
 
       <!--    Header  -->
-    <header class="header-blog bg-animation" style="margin-top: 48px;">
-      <div class="container">
-        <div class="row header-row">
-          <div class="col align-self-center main-title text-center">
+    <div class="context text-center text-white">
+      <template v-if="loading">
+                      <h4 class="text-white" style="margin-top: 5%;">Loading Game Results.....
+                        <span class="spinner-border spinner-border-sm"></span>
+                      </h4>
+                    </template>
 
-            <template v-if="loading">
-              <h4 class="text-white">Loading Game Results.....
-                <span class="spinner-border spinner-border-sm"></span>
-              </h4>
-            </template>
+                    <template v-if="drawResults.length">
+                                  <h1 class="text-white"><b>{{ gameDay ? gameDescription(gameDay) : '' }}</b></h1>
 
-            <template v-if="drawResults.length">
-                          <h1 class="text-white"><b>{{ gameDay ? gameDescription(gameDay) : '' }}</b></h1>
-
-                          <div class="d-inline-flex text-center">
-                            <h1 class="result-numbers">{{ drawResults[0] }}</h1>
-                            <h1 class="result-numbers">{{ drawResults[1] }}</h1>
-                            <h1 class="result-numbers">{{ drawResults[2] }}</h1>
-                            <h1 class="result-numbers">{{ drawResults[3] }}</h1>
-                            <h1 class="result-numbers">{{ drawResults[4] }}</h1>
-                          </div>
-            </template>
-            <template v-else>
-              <h4 class="text-white">Welcome to Nanty</h4>
-            </template>
+                                  <div class="d-inline-flex text-center">
+                                    <h1 class="result-numbers">{{ drawResults[0] }}</h1>
+                                    <h1 class="result-numbers">{{ drawResults[1] }}</h1>
+                                    <h1 class="result-numbers">{{ drawResults[2] }}</h1>
+                                    <h1 class="result-numbers">{{ drawResults[3] }}</h1>
+                                    <h1 class="result-numbers">{{ drawResults[4] }}</h1>
+                                  </div>
+                    </template>
+                    <template v-else>
+                      <h3 class="text-white" style="margin-top: 4%">Welcome to Nanty</h3>
+                    </template>
+    </div>
 
 
-          </div>
-        </div>
-      </div>
-    </header>
+    <div class="area" >
+      <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div >
+
 
     <!-- ........... Carousel ............... -->
     <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
@@ -236,8 +244,9 @@ const stakeNow = async () => {
 
   </div>
   <br>
-  <div class="container">
 
+
+  <div class="container">
           <!-- ................ Game Day images .................. -->
     <div class="row justify-content-center">
       <div class="col-md-10">
@@ -332,9 +341,8 @@ const stakeNow = async () => {
     </form>
   </div>
 
-  <h1>{{ gameDay }}</h1>
-
 </template>
+
 
 <style scoped>
 
@@ -394,6 +402,9 @@ const stakeNow = async () => {
 }
 
 
+
+
+
 /* Header styles*/
 
 .result-numbers{
@@ -418,72 +429,144 @@ const stakeNow = async () => {
 }
 }
 
-body{
-  margin:0;
-  padding:0;
-  background-color:#fafafa;
+
+
+
+
+
+/*                              new.................*/
+
+.context {
+  width: 100%;
+  position: absolute;
+  top: 13%;
 }
 
-.header-blog .container {
-  position: relative;
-  height: 100%;
-}
-
-.header-blog {
-  background-image: url("../../public/img/cover.jpg");
-}
-
-.header-blog {
-  height: 50vh;
-  background-size: cover;
-  background-repeat: no-repeat;
-  -webkit-box-shadow: 0 15px 30px 0 rgba(5, 16, 44, .15);
-  box-shadow: 0 15px 30px 0 rgba(5, 16, 44, .15);
+.context h1{
+  text-align: center;
+  color: #fff;
 }
 
 
-.bg-animation {
-  -webkit-animation: bg-animation 8s ease-in-out infinite;
-  animation: bg-animation 8s ease-in-out infinite;
+.area{
+  background: #4e54c8;
+  background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
+  width: 100%;
+  height: 40vh;
+}
+
+.circles{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: inherit;
+  overflow: hidden;
+}
+
+.circles li{
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  animation: animate 25s linear infinite;
+  bottom: -150px;
+
+}
+
+.circles li:nth-child(1){
+  left: 25%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 0s;
 }
 
 
-header{
-  display:block;
+.circles li:nth-child(2){
+  left: 10%;
+  width: 20px;
+  height: 20px;
+  animation-delay: 2s;
+  animation-duration: 12s;
 }
 
-.header-blog .container {
-  position: relative;
-  height: 100%;
+.circles li:nth-child(3){
+  left: 70%;
+  width: 20px;
+  height: 20px;
+  animation-delay: 4s;
 }
 
-.header-row {
-  height: 100%;
+.circles li:nth-child(4){
+  left: 40%;
+  width: 60px;
+  height: 60px;
+  animation-delay: 0s;
+  animation-duration: 18s;
 }
 
-@-webkit-keyframes bg-animation {
-  0% {
-    background-position: top;
+.circles li:nth-child(5){
+  left: 65%;
+  width: 20px;
+  height: 20px;
+  animation-delay: 0s;
+}
+
+.circles li:nth-child(6){
+  left: 75%;
+  width: 110px;
+  height: 110px;
+  animation-delay: 3s;
+}
+
+.circles li:nth-child(7){
+  left: 35%;
+  width: 150px;
+  height: 150px;
+  animation-delay: 7s;
+}
+
+.circles li:nth-child(8){
+  left: 50%;
+  width: 25px;
+  height: 25px;
+  animation-delay: 15s;
+  animation-duration: 45s;
+}
+
+.circles li:nth-child(9){
+  left: 20%;
+  width: 15px;
+  height: 15px;
+  animation-delay: 2s;
+  animation-duration: 35s;
+}
+
+.circles li:nth-child(10){
+  left: 85%;
+  width: 150px;
+  height: 150px;
+  animation-delay: 0s;
+  animation-duration: 11s;
+}
+
+
+
+@keyframes animate {
+
+  0%{
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
   }
 
-  50% {
-    background-position: bottom;
-  }
-  100% {
-    background-position: top;
-  }
-}
-
-@keyframes bg-animation {
-  0% {
-    background-position: top;
+  100%{
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
   }
 
-  50% {
-    background-position: bottom;
-  }
-  100% {
-    background-position: top;
-  }
 }
 </style>

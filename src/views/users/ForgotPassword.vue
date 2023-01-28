@@ -1,10 +1,11 @@
 <script setup>
-import {onMounted, reactive, ref, watch} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import Button from 'primevue/button';
 import {onBeforeRouteLeave, useRouter} from "vue-router";
 import axios from "../../axios.js";
-import { useHomeStore } from "../../store/home.js";
+import { useHomeStore } from "@/store/home";
 
+const showNewPasswordForm = ref(false);
 const store = useHomeStore();
 const closeModal = ref();
 const openModal = ref();
@@ -22,12 +23,10 @@ const resetPasswordData = reactive({
 //on mounted hook show modal
 onMounted(() => {
   if (store.token) return router.push({name: 'home'});//Redirect home
-  store.passwordResetCode = null;
   openModal.value.click();
 })
 
 onBeforeRouteLeave((to, from, next) => { //on route leave clear verification data from store
-  store.passwordResetCode = null;
   closeModal.value.click();
   next();
 });
@@ -60,8 +59,8 @@ const requestCode = async () => {
     )
 
     if (response.status === 200) {
-      store.passwordResetCode = response.data.code;
-      resetPasswordData.phoneNumber = response.data.phoneNumber;
+      resetPasswordData.phoneNumber = formData.phoneNumber;
+      showNewPasswordForm.value = true;
       error.value = '';
     }
 
@@ -94,17 +93,14 @@ const resetPassword = async () => {
     if (!resetPasswordData.password.trim()) return error.value = "Please provide a password";
     if (!resetPasswordData.password.match(regex)) return error.value = "Minimum password length should be 6 and contains at least 1 special character";
     if (resetPasswordData.password !== resetPasswordData.password_confirmation) return error.value = "Passwords do not match";
-    if (resetPasswordData.passwordResetCode !== store.passwordResetCode) return error.value = "Password reset code is incorrect. Please check phone sms";
+    if (!resetPasswordData.passwordResetCode) return error.value = "Please input the code sent to your phone";
 
     //Send Data To Server
     const response = await  axios.post(
         '/users/auth/reset-password',
         JSON.stringify({
-          ...resetPasswordData, password_confirmation: undefined, passwordResetCode: undefined
+          ...resetPasswordData, password_confirmation: undefined,
         }),
-        // {
-        //   headers: { 'Authorization': `Bearer ${store.token}`}
-        // }
     )
 
     if (response.status === 200) {
@@ -147,13 +143,13 @@ const resetPassword = async () => {
                 <br><br>
 
                 <div class="card shadow p-4">
-                  <h6 v-if="store.passwordResetCode">Create a new password</h6>
+                  <h6 v-if="showNewPasswordForm">Create a new password</h6>
                   <h6 v-else>Please Enter Your Phone</h6>
                   <template v-if="error">
                     <p class="text-danger text-center mt-2" id="errorMessage">{{ error }}</p>
                   </template>
 
-                  <form @submit.prevent="resetPassword" v-if="store.passwordResetCode">
+                  <form @submit.prevent="resetPassword" v-if="showNewPasswordForm">
 
                       <input type="password" class="form-control mb-3 shadow-none" placeholder="Create New Password"
                             required v-model="resetPasswordData.password">

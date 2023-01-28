@@ -6,7 +6,7 @@ import TabView from "primevue/tabview";
 import RadioButton from 'primevue/radiobutton';
 import {onBeforeRouteLeave, useRouter} from "vue-router";
 import axios from "../../axios.js";
-import { useHomeStore } from "../../store/home.js";
+import { useHomeStore } from "@/store/home";
 
 const closeModal = ref();
 const openModal = ref();

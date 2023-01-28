@@ -3,29 +3,27 @@ import { ref } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import axios from "../../axios.js";
-import { useHomeStore } from "../../store/home.js";
+import { useHomeStore } from "@/store/home";
+import { formatNumber } from "@/functions";
 
 const loading = ref(false);
 const store = useHomeStore();
 const data = ref([]);
 
-//..............Load tickets ..................
+//..............Load Transactions ..................
 const getData = async () => {
   try {
     loading.value = true;
 
     const response = await  axios.get(
-        '/users/tickets',
+        '/users/transactions',
         {
           headers: { 'Authorization': `Bearer ${store.token}`}
-         }
+        }
     )
 
     if (response.status === 200) {
-      data.value = response.data.data;
-      data.value.map(item => {
-        item.numbers = JSON.parse(item.numbers);
-      })
+      data.value = response.data;
     }
 
 
@@ -50,14 +48,14 @@ getData();
 </script>
 
 <template>
-<h3 class="pt-5 mt-3 text-center">My Tickets</h3>
+  <h3 class="pt-5 mt-3 text-center">Transactions</h3>
 
   <div class="container-fluid">
     <div class="row">
       <div class="col">
         <div class="table-responsive">
 
-              <!--        Data table  -->
+          <!--        Data table  -->
           <DataTable :value="data"  dataKey="id" :paginator="true" :loading="loading" :rows="10"
                      class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows p-datatable-gridlines"
                      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport
@@ -65,32 +63,32 @@ getData();
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >
             <template #loading>
-              <h6 class="text-white fw-bold">Loading Tickets Please wait. <span class="spinner-border spinner-border-sm"></span></h6>
+              <h6 class="text-white fw-bold">Loading Data Please wait. <span class="spinner-border spinner-border-sm"></span></h6>
 
             </template>
-            <Column field="id" header="Ticket ID" class="data-table-font-size"></Column>
-            <Column field="ticketDate" header="Date" class="data-table-font-size">
+            <Column field="id" header="Transaction ID" class="data-table-font-size"></Column>
+            <Column field="createdAt" header="Date" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  {{ new Date(data.ticketDate).toLocaleDateString() }}
-                </td>
-              </template>
-            </Column>
-            <Column field="numbers" header="Numbers" class="data-table-font-size">
-              <template #body="{data}">
-                <td>
-                  {{ data.numbers.toString()  }}
+                  {{ new Date(data.createdAt).toLocaleDateString() }} {{ new Date(data.createdAt).toLocaleTimeString() }}
                 </td>
               </template>
             </Column>
             <Column field="amount" header="Amount" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  {{ data.amount }}
+                  {{ formatNumber(data.amount) }}
                 </td>
               </template>
             </Column>
-            <Column field="ticketStatus" header="Status" class="data-table-font-size"></Column>
+            <Column field="transactionType" header="Type" class="data-table-font-size"></Column>
+            <Column field="status" header="Status" class="data-table-font-size">
+              <template #body="{data}">
+                <td>
+                  <span class="badge text-bg-success" style="font-size: 0.9em">{{ data.status }}</span>
+                </td>
+              </template>
+            </Column>
           </DataTable>
 
         </div>

@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-// import { ref } from "vue";
 import { parse, stringify,  } from 'zipson';
 
 // You can name the return value of `defineStore()` anything you want,
@@ -17,7 +16,6 @@ export const useHomeStore = defineStore('homeStore', {
             verificationCode: null,
             user: {},
             token: "",
-            passwordResetCode: null
          }
     },
 
@@ -60,7 +58,7 @@ export const useHomeStore = defineStore('homeStore', {
     persist: {
        key: '_loda',
             storage: sessionStorage,
-            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user', 'network', 'passwordResetCode'],
+            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user', 'network'],
             serializer: {
                 deserialize: parse,
                 serialize: stringify
