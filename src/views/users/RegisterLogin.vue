@@ -53,7 +53,7 @@ const login = async () => {
     loginError.value = "";
     //Validation
     if (!loginData.phoneNumber) return loginError.value = "Please enter phone number";
-    if (loginData.phoneNumber.toString().length  < 9) return loginError.value = "Please check phone number";
+    if (loginData.phoneNumber.toString().length  !== 9) return loginError.value = "Please check phone number";
     if (!loginData.password.trim()) return loginError.value = "Please provide a password";
     //Send Data To Server
     const response = await  axios.post(
@@ -114,8 +114,6 @@ const requestSMS = async () => {
     }
 
 
-
-
   }catch (e) {
     if (e.response) return registerError.value = e.response.data;
     if (e.request && e.request.status === 0) {
@@ -148,7 +146,7 @@ const requestSMS = async () => {
                 <button style="float: right; margin-left: 10px; width: 30px;"
                         class="text-white bg-danger border-0 fw-bold float-end"
                         @click="router.push({name: 'home'})" title="Close">X</button>&nbsp;
-                <span class="float-end">Click here to close </span>
+                <span class="float-end"><mark>Click here to close </mark></span>
 
                 <br><br>
 
@@ -172,7 +170,7 @@ const requestSMS = async () => {
 
                       <br>
                       <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                             v-model="loginData.password" placeholder="Password">
+                             v-model="loginData.password" placeholder="Password" maxlength="200">
 
                       <div class="form-check mt-3">
                         <input class="form-check-input" id="showPassword" type="checkbox" v-model="showPassword">
@@ -245,10 +243,10 @@ const requestSMS = async () => {
 
                       <br>
                       <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                             v-model="registerData.password" placeholder="Password">
+                             v-model="registerData.password" placeholder="Password" maxlength="100">
                       <br>
                       <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                             v-model="registerData.password_confirmation" placeholder="Confirm Password">
+                             v-model="registerData.password_confirmation" placeholder="Confirm Password" maxlength="100">
 
                       <div class="form-check mt-3">
                         <input class="form-check-input" id="showRegisterPassword" type="checkbox" v-model="showPassword">
@@ -289,12 +287,23 @@ img {
   margin-right: .5em;
 }
 
-@media screen and (min-width: 500px) {
-  #myDialog {
-    width: 500px;
-  }
-  #errorMessage {
-    max-width: 500px;
-  }
+
+.modal-body {
+  width: 100%;
+  height: 100vh;
+  animation: gradient 2s infinite alternate linear;
+  background: hsl(283, 10%, 86%);
 }
+
+
+@keyframes gradient {
+
+  100% {
+    background: hsl(336, 2%, 45%);
+  }
+
+}
+
+
+
 </style>

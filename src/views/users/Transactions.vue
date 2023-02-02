@@ -85,7 +85,9 @@ getData();
             <Column field="status" header="Status" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  <span class="badge text-bg-success" style="font-size: 0.9em">{{ data.status }}</span>
+                  <span class="badge bg-secondary" style="font-size: 0.9em" v-if="data.status === 'pending'">{{ data.status }}</span>
+                  <span class="badge bg-success" style="font-size: 0.9em" v-if="data.status === 'successful'">{{ data.status }}</span>
+                  <span class="badge bg-danger" style="font-size: 0.9em" v-if="data.status === 'failed'">{{ data.status }}</span>
                 </td>
               </template>
             </Column>

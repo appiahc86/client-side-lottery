@@ -110,6 +110,11 @@ watch(() => stakeFormData.selectedNumbers.length, (value) => {
   payable.value =  stakeFunction(stakeFormData.selectedNumbers.length, stakeFormData.amountToStake);
 })
 
+//Validate amount
+const validateAmount = (e) => {
+  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+  e.target.value = e.target.value.replace(/(\..*)\./g, '$1');
+}
 
 //Stake Lottery
 const stakeNow = async () => {
@@ -131,6 +136,9 @@ const stakeNow = async () => {
     if (parseFloat(store.user.balance) < parseInt(payable.value)){
       return toast.add({severity:'warn', summary: 'Error', detail: 'Balance is not sufficient', life: 4000});
     }
+
+    if (payable.value < 1) return toast.add({severity:'warn', summary: 'Error',
+      detail: `Minimum amount should be 1`, life: 4000});
 
 
 
@@ -322,10 +330,10 @@ const stakeNow = async () => {
 
 <!--   Amount Entry   -->
       <div class="col-sm-6" style="border: 1px solid #ccc" v-if="stakeFormData.selectedNumbers.length > 1">
-          <h6 class="mt-3">Enter Amount To Stake(GHS)</h6>
+          <h6 class="mt-3">Enter Perm Amount (GHS)</h6>
 
-        <input type="number" class="form-control mb-3 shadow-none" min="0" oninput="validity.valid || (value = 0)"
-               v-model.number="stakeFormData.amountToStake">
+        <input type="tel" class="form-control mb-3 shadow-none" minlength="1" maxlength="5"
+               v-model.number="stakeFormData.amountToStake" @input="validateAmount">
       </div>
       <h4 class="mt-3">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
