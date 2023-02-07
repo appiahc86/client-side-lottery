@@ -44,19 +44,23 @@ const withdraw = async () => {
       detail: `Please select Service provider`, life: 4000});
 
     if (amount.value < 1) return toast.add({severity:'warn', summary: 'Error',
-      detail: `Minimum amount should be 1`, life: 4000});
+      detail: `Amount should be from 1 to 2000`, life: 4000});
+    if (amount.value > 2000) return toast.add({severity:'warn', summary: 'Error',
+      detail: `Amount should be from 1 to 2000`, life: 4000});
 
     //Send Data To Server
     const response = await  axios.post(
         '/users/transactions/withdraw',
-        JSON.stringify({amount: amount.value, network: selectedNetwork.value.value, transactionType: 'withdrawal'}),
+        JSON.stringify({amount: amount.value, network: selectedNetwork.value.value}),
         {
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.token}` }
         }
     )
 
     if (response.status === 200) {
       amount.value = null;
+      store.user.balance = parseFloat(response.data.balance);
+      return toast.add({severity:'success', summary: 'Success', detail: `Your request has been received and its processing`, life: 5000});
     }
 
   }catch (e) {
@@ -69,7 +73,7 @@ const withdraw = async () => {
 
     return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, something went wrong. Please try again later',
       life: 4000});
-  }finally { loadingInProgress.value = false; console.clear() }
+  }finally { loadingInProgress.value = false; }
 }
 
 </script>

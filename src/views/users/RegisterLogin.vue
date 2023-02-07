@@ -102,7 +102,7 @@ const requestSMS = async () => {
     //Send Data To Server
     const response = await  axios.post(
         '/users/auth/verify',
-        JSON.stringify({...registerData, password_confirmation: undefined}),
+        JSON.stringify({phoneNumber: registerData.phoneNumber, network: selectedNetwork.value}),
         // {
         //   headers: { 'Authorization': `Bearer ${store.token}`}
         // }
@@ -233,8 +233,8 @@ const requestSMS = async () => {
 
                           <tr class="">
                             <td>Mtn</td>
-                            <td>Vodafon</td>
-                            <td>Airteltigo</td>
+                            <td>Vodafone</td>
+                            <td>AirtelTigo</td>
                           </tr>
                         </table>
 

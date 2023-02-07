@@ -42,9 +42,6 @@ const getData = async () => {
 getData();
 
 
-
-
-
 </script>
 
 <template>
@@ -66,7 +63,6 @@ getData();
               <h6 class="text-white fw-bold">Loading Data Please wait. <span class="spinner-border spinner-border-sm"></span></h6>
 
             </template>
-            <Column field="id" header="Transaction ID" class="data-table-font-size"></Column>
             <Column field="createdAt" header="Date" class="data-table-font-size">
               <template #body="{data}">
                 <td>
@@ -74,6 +70,7 @@ getData();
                 </td>
               </template>
             </Column>
+            <Column field="referenceNumber" header="Reference No." class="data-table-font-size"></Column>
             <Column field="amount" header="Amount" class="data-table-font-size">
               <template #body="{data}">
                 <td>
@@ -84,7 +81,7 @@ getData();
             <Column field="transactionType" header="Type" class="data-table-font-size"></Column>
             <Column field="status" header="Status" class="data-table-font-size">
               <template #body="{data}">
-                <td>
+                <td class="text-capitalize">
                   <span class="badge bg-secondary" style="font-size: 0.9em" v-if="data.status === 'pending'">{{ data.status }}</span>
                   <span class="badge bg-success" style="font-size: 0.9em" v-if="data.status === 'successful'">{{ data.status }}</span>
                   <span class="badge bg-danger" style="font-size: 0.9em" v-if="data.status === 'failed'">{{ data.status }}</span>
