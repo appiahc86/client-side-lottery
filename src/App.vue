@@ -7,7 +7,7 @@ import Button from "primevue/button";
 import Avatar from 'primevue/avatar';
 import { useHomeStore } from "./store/home.js";
 import { useToast } from "primevue/usetoast";
-import {formatNumber} from "./functions/index.js";
+import {formatNumber} from "@/functions";
 import {useRouter} from "vue-router";
 import axios from "./axios.js";
 
@@ -19,7 +19,7 @@ const accountLoading = ref(false);
 let visibleLeft = ref(false); // this will toggle the sidebar
 let profileSidebar = ref(false); // this will toggle the sidebar for user profile
 
-// const socket = io('http://localhost:3000');
+const socket = io(`${axios.defaults.baseURL}`);
 
 // reload account balance
 const reloadAccountBalance = async () => {
@@ -116,11 +116,17 @@ const logout = () => {
     </div>
 
     <ul>
-      <li class="my-3"><router-link :to="{name: 'my-tickets'}" @click="profileSidebar = false">My Tickets</router-link></li>
+      <li class="my-4">
+        <router-link :to="{name: 'my-tickets'}" @click="profileSidebar = false" class="text-decoration-none fw-bold">
+          My Tickets
+        </router-link></li>
 
-      <li class="mb-3"><router-link :to="{name: 'transactions'}" @click="profileSidebar = false">Transactions</router-link></li>
+      <li class="mb-3">
+        <router-link :to="{name: 'transactions'}" @click="profileSidebar = false" class="text-decoration-none fw-bold">
+          Transactions
+        </router-link></li>
 
-      <li><a class="text-decoration-none" @click="logout" style="cursor: pointer;">
+      <li class="mt-5 text-center" style="list-style: none;"><a class="text-decoration-none" @click="logout" style="cursor: pointer;">
         <b><span class="pi pi-power-off text-danger"></span> Logout</b></a>
       </li>
     </ul>

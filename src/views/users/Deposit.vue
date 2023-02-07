@@ -52,6 +52,9 @@ const deposit = async () => {
     if (amount.value < 1) return toast.add({severity:'warn', summary: 'Error',
       detail: `Minimum amount should be 1`, life: 4000});
 
+    if (amount.value > 2000) return toast.add({severity:'warn', summary: 'Error',
+      detail: `Maximum amount should be 2,000`, life: 4000});
+
     //Send Data To Server
     const response = await  axios.post(
         '/users/transactions/deposit',
@@ -141,7 +144,7 @@ const submitOtp = async () => {
     )
 
     if (response.status === 200) {
-      alert("all Done")
+      toast.add({severity:'success', summary: 'Success', detail: "Your request was received and it's processing", life: 4000});
     }
 
   }catch (e) {
@@ -185,12 +188,19 @@ const submitOtp = async () => {
           <div class="field">
             <input type="tel" v-model.number="amount" minlength="1" maxlength="4" aria-describedby="username2-help"
                    class="p-inputtext w-100 rounded-pill px-3" placeholder="Amount" required @input="validateAmount">
-            <small id="username2-help" class="text-muted">Minimum deposit amount is GHS 1.00</small>
+
           </div>
           <div class="text-center">
             <Button label="Top Up Now" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
                     class="p-button p-button-rounded mt-4"/>
           </div>
+          <br>
+
+            <ol class="">
+              <li class="text-muted"><small>Maximum deposit amount is GHS 2,000</small></li>
+              <li class="text-muted"><small>Minimum deposit amount is GHS 1</small></li>
+            </ol>
+
 
         </form>
       </div>

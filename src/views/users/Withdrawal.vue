@@ -44,9 +44,9 @@ const withdraw = async () => {
       detail: `Please select Service provider`, life: 4000});
 
     if (amount.value < 1) return toast.add({severity:'warn', summary: 'Error',
-      detail: `Amount should be from 1 to 2000`, life: 4000});
+      detail: `Minimum amount should be 1`, life: 4000});
     if (amount.value > 2000) return toast.add({severity:'warn', summary: 'Error',
-      detail: `Amount should be from 1 to 2000`, life: 4000});
+      detail: `Maximum amount should be 2,000`, life: 4000});
 
     //Send Data To Server
     const response = await  axios.post(
@@ -110,6 +110,11 @@ const withdraw = async () => {
             <Button label="Withdraw" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
                     class="p-button p-button-rounded mt-2"/>
           </div>
+          <br>
+          <ol class="">
+            <li class="text-muted"><small>Maximum withdrawal amount is GHS 2,000</small></li>
+            <li class="text-muted"><small>Minimum withdrawal amount is GHS 1</small></li>
+          </ol>
 
         </form>
       </div>
