@@ -62,14 +62,20 @@ const logout = () => {
 
 <template>
 
-  <nav class="navbar navbar-expand-lg bg-light fixed-top" style="height: 48px;">
+  <nav class="navbar navbar-expand-lg bg-light fixed-top shadow shadow-sm" style="height: 48px;">
     <div class="container-fluid">
-      <h4 class="navbar-brand mb-0 h1 pi pi-list" @click="visibleLeft = true"></h4>
+      <div class="navbar-brand mb-0">
+        <span class="h1 pi pi-list" @click="visibleLeft = true" style="cursor: pointer;">
+        </span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span @click="router.push({name: 'home'})" style="cursor: pointer;">
+          <img src="/img/logo.PNG" alt="logo" width="100" ></span>
+      </div>
+
       <div class="dropdown">
 
         <router-link :to="{name: 'register-login'}" v-if="!store.token"
-                     class="badge bg-dark rounded-pill text-white text-decoration-none register-btn py-2">
-          Login / Register
+                     class="btn btn-primary btn-sm text-decoration-none register-btn">
+          Login <span class="hide-on-sm">/ Register</span>
         </router-link>
 
         <Avatar icon="pi pi-user" class="mr-2" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
@@ -87,13 +93,16 @@ const logout = () => {
 <!--  menu sidebar -->
   <Sidebar v-model:visible="visibleLeft" :baseZIndex="10000">
     <ul>
-      <li><router-link :to="{name: 'home'}" @click="visibleLeft = false">Home</router-link></li>
+      <li style="list-style: none">
+        <router-link :to="{name: 'home'}" @click="visibleLeft = false" class="text-decoration-none">&#128250; &nbsp; HOME</router-link></li>
       <br>
-      <li>How To Play</li>
+      <li style="list-style: none">&#128153; &nbsp; NLA</li>
       <br>
-      <li>Results</li>
+      <li style="list-style: none">&#128273; &nbsp; RULES</li>
       <br>
-      <li><router-link :to="{name: 'about'}" @click="visibleLeft = false">About</router-link></li>
+      <li style="list-style: none">&#9203; &nbsp; RESULTS</li>
+      <br>
+<!--      <li><router-link :to="{name: 'about'}" @click="visibleLeft = false">About</router-link></li>-->
     </ul>
   </Sidebar>
 
@@ -171,6 +180,12 @@ const logout = () => {
 @media screen and (max-width: 500px){
   .my-toast{
     font-size: 0.5em !important;
+  }
+}
+
+@media screen and (max-width: 300px){
+  .hide-on-sm{
+    display: none;
   }
 }
 </style>

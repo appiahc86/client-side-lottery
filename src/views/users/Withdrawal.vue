@@ -92,11 +92,10 @@ const withdraw = async () => {
                   <img :src="slotProps.value.icon" />
                   <div>{{slotProps.value.name}}</div>
                 </div>
-
             </template>
             <template #option="slotProps">
               <div class="d-flex">
-                <img :src="slotProps.option.icon" />
+                <img :src="slotProps.option.icon" alt="image"/>
                 <div>{{slotProps.option.name}}</div>
               </div>
             </template>
@@ -104,7 +103,6 @@ const withdraw = async () => {
           <div class="field">
             <input type="tel" v-model.number="amount" minlength="1" maxlength="4" aria-describedby="username2-help"
                    class="p-inputtext w-100 rounded-pill px-3" placeholder="Amount" required @input="validateAmount">
-            <small id="username2-help" class="text-muted">Minimum withdraw amount is GHS 1.00</small>
           </div>
           <div class="text-center">
             <Button label="Withdraw" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
