@@ -101,11 +101,9 @@ const registerUser = async () => {
             <div class="row justify-content-center">
               <div class="col-md-6 col-lg-5 col-xl-4 mt-5">
 
-                <button style="float: right; margin-left: 10px; width: 30px;"
-                        class="text-white bg-danger border-0 fw-bold float-end"
-                        @click="router.push({name: 'home'})" title="Close">X</button>&nbsp;
-                <span class="float-end">Click here to close </span>
-
+                <h3 style="float: right; margin-left: 10px; width: 30px; cursor: pointer"
+                        class="text-danger border-0 float-end"
+                        @click="router.push({name: 'home'})" title="Close">X</h3>&nbsp;
                 <br><br>
 
       <div class="card shadow p-4">

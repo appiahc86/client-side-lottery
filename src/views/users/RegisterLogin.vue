@@ -64,7 +64,6 @@ const login = async () => {
     if (response.status === 200) {
       store.setToken(response.data.token);
       store.setUser(response.data.user);
-      toast.add({severity:'success', summary: 'Thanks', detail: 'You are logged in', life: 4000});
       return router.push({name: 'home'});
     }
 
@@ -90,12 +89,13 @@ const requestSMS = async () => {
     loadingInProgress.value = true;
     registerError.value = "";
 
-    const regex = /^(?=.{6,})(?=.*[!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])/
+    // const regex = /^(?=.{6,})(?=.*[!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])/
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
     //Validation
     if (registerData.phoneNumber.toString().length  !== 9) return registerError.value = "Please check phone number";
     if (!registerData.password.trim()) return registerError.value = "Please provide a password";
-    if (!registerData.password.match(regex)) return registerError.value = "Minimum password length should be 6 and contains at least 1 special character";
+    if (!registerData.password.match(regex)) return registerError.value = "Password does not meet requirements";
     if (registerData.password !== registerData.password_confirmation) return registerError.value = "Passwords do not match";
     if (!selectedNetwork.value) return registerError.value = "Please select a service provider";
 
@@ -134,22 +134,20 @@ const requestSMS = async () => {
 <template>
 
 <!--  this button launches the modal -->
-  <button type="button" ref="openModal" class="d-none mt-5 mb-5" data-bs-toggle="modal" data-bs-target="#authModal"></button>
+  <button type="button" ref="openModal" class="d-none mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#authModal"></button>
 
   <!-- Modal -->
   <div class="modal" id="authModal" tabindex="-1" data-bs-keyboard="false" aria-labelledby="authModal" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
       <div class="modal-content">
         <div class="modal-body">
-          <div class="container-fluid mt-3">
+          <div class="container-fluid mt-0">
             <div class="row justify-content-center">
               <div class="col-md-6 col-lg-5 col-xl-4">
 
-                <button style="float: right; margin-left: 10px; width: 30px;"
-                        class="text-white bg-danger border-0 fw-bold float-end"
-                        @click="router.push({name: 'home'})" title="Close">X</button>&nbsp;
-                <span class="float-end"><mark>Click here to close </mark></span>
-
+                <h3 style="float: right; margin-left: 10px; width: 30px; cursor: pointer;"
+                        class="text-danger border-0 float-end"
+                        @click="router.push({name: 'home'})" title="Close">X</h3>&nbsp;
                 <br><br>
 
                 <div class="card shadow">
@@ -256,6 +254,12 @@ const requestSMS = async () => {
                           Show Password
                         </label>
                       </div>
+                      <p style="line-height: 0.7em">
+                        <small class="text-muted" style="font-size: 0.8em;">
+                          Password must be at least 6 characters long and contains at least one uppercase letter,
+                          one lowercase letter, and one digit.
+                        </small>
+                      </p>
 
                       <div class="text-center">
                         <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"

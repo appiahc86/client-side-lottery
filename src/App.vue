@@ -1,6 +1,6 @@
 <script setup>
 import { io }  from "socket.io-client";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
 import Button from "primevue/button";
@@ -56,7 +56,6 @@ const logout = () => {
   store.clearToken();
   store.clearUser();
   router.push({name: 'home'});
-  toast.add({severity:'success', summary: 'Success', detail: 'You are logged out', life: 4000});
 }
 </script>
 
@@ -145,7 +144,7 @@ const logout = () => {
 
   <br><br><br><br><br><br>
 <!--  Footer -->
-  <footer class="navbar fixed-bottom bg-dark text-white">
+  <footer class="navbar bg-dark text-white">
 
     <div class="container">
       <div class="row">

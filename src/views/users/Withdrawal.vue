@@ -80,7 +80,7 @@ const withdraw = async () => {
 
 
 <template>
-  <div class="container" style="margin-top: 100px;">
+  <div class="container" style="margin-top: 100px; margin-bottom: 50vh;">
     <h3 class="text-center">Withdrawal</h3>
     <div class="row justify-content-center">
       <div class="col-sm-6 col-md-5">
@@ -106,7 +106,7 @@ const withdraw = async () => {
           </div>
           <div class="text-center">
             <Button label="Withdraw" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
-                    class="p-button p-button-rounded mt-2"/>
+                    class="p-button p-button-rounded mt-3"/>
           </div>
           <br>
           <ol class="">

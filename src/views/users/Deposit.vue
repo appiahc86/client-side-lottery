@@ -164,7 +164,7 @@ const submitOtp = async () => {
 
 
 <template>
-  <div class="container" style="margin-top: 100px;">
+  <div class="container" style="margin-top: 100px; margin-bottom: 50vh;">
     <h3 class="text-center">Deposit</h3>
     <div class="row justify-content-center">
       <div class="col-sm-6 col-md-5">

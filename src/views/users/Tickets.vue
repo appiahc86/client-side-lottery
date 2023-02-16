@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import axios from "../../axios.js";
-import { useHomeStore } from "../../store/home.js";
+import { useHomeStore } from "@/store/home";
+import moment from "moment";
+import { formatNumber } from "@/functions";
 
 const loading = ref(false);
 const store = useHomeStore();
@@ -52,7 +54,7 @@ getData();
 <template>
 <h3 class="pt-5 mt-3 text-center">My Tickets</h3>
 
-  <div class="container-fluid">
+  <div class="container-fluid" style="margin-bottom: 50vh">
     <div class="row">
       <div class="col">
         <div class="table-responsive">
@@ -72,7 +74,7 @@ getData();
             <Column field="ticketDate" header="Date" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  {{ new Date(data.ticketDate).toLocaleDateString() }}
+                  {{ moment(data.ticketDate).format("YYYY-MM-DD") }}
                 </td>
               </template>
             </Column>
@@ -86,18 +88,25 @@ getData();
             <Column field="amount" header="Amount" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  {{ data.amount }}
+                  {{ formatNumber(data.payable) }}
                 </td>
               </template>
             </Column>
             <Column field="ticketStatus" header="Status" class="data-table-font-size"></Column>
+            <Column field="amount" header="Won" class="data-table-font-size">
+              <template #body="{data}">
+                <td :class="data.amountWon ? 'text-success fw-bold' : ''">
+                  {{ formatNumber(data.amountWon) || 0 }}
+                </td>
+              </template>
+            </Column>
           </DataTable>
 
         </div>
+
       </div>
     </div>
   </div>
-
 
 
 </template>

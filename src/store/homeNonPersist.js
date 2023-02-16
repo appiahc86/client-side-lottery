@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import moment from "moment";
 
 
 // You can name the return value of `defineStore()` anything you want,
@@ -12,15 +13,14 @@ export const useHomeNonPersistStore = defineStore('homeNonPersistStore', {
         return {
             drawResults: [],
             images: [],
-            day: new Date().getDay()
+            date: moment()
         }
     },
 
     getters: {
         getDrawResults: (state) => state.drawResults.length ? JSON.parse(state.drawResults[0].numbers) : [],
         getImages: (state) => state.images,
-        getGameDay: (state) => state.drawResults.length ? state.drawResults[0].drawDate : null,
-        getDay: (state) => state.day
+        getDate: (state) => state.date,
     },
 
     actions: {
@@ -31,7 +31,7 @@ export const useHomeNonPersistStore = defineStore('homeNonPersistStore', {
         setImages(payload){ this.images = payload },
 
         //set day
-        setDay(payload){ this.day = payload },
+        setDate(payload){ this.date = payload },
 
     },
 

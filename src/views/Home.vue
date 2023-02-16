@@ -2,9 +2,10 @@
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import Carousel from 'primevue/carousel';
 import Button from 'primevue/button';
+import moment from "moment";
 import axios from "../axios.js";
-import { stakeFunction, formatNumber, gameDescription } from "../functions/index.js";
-import {useHomeStore} from "../store/home.js";
+import { stakeFunction, formatNumber, gameDescription } from "@/functions";
+import {useHomeStore} from "@/store/home";
 import router from "../router/index.js";
 import { useHomeNonPersistStore } from "@/store/homeNonPersist";
 
@@ -13,10 +14,24 @@ const store = useHomeStore();
 const payable = ref(0);
 const loading = ref(false);
 
-const today = computed(() => nonPersistStore.getDay);
+const today = ref(null);
 const ads = computed(() => nonPersistStore.getImages);
 const drawResults = computed(() => nonPersistStore.getDrawResults);
-const gameDay  = computed(() => nonPersistStore.getGameDay);
+const gameDay = ref(null);
+
+
+//Watch date from store. if it changes, update 'today' variable
+watch(() => nonPersistStore.date, (value) => {
+    today.value = value;
+})
+
+
+watch(() => today.value, (value) => {
+  gameDay.value = value;
+  if (moment(value).hours() >= 20){
+    gameDay.value = moment(value).add(1, 'days')
+  }
+})
 
 
 //Stake Form Data
@@ -33,13 +48,13 @@ const getDrawResults = async () => {
     const response = await axios.get('/game-results');
     if (response.status === 200){
       nonPersistStore.setDrawResults(response.data.gameResults);
-      nonPersistStore.setDay(response.data.day);
+      nonPersistStore.setDate(response.data.date);
     }
   }catch (e) {
     if (e.response) return toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
 
     if (e.request && e.request.status === 0) {
-      return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later', life: 4000});
+      return toast.add({severity:'error', summary: 'Error', detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later', life: 4000});
     }
     return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, something went wrong. Please try reloading', life: 4000});
 
@@ -59,30 +74,27 @@ try {
 
   if (response.status === 200) {
     nonPersistStore.setImages(response.data.images);
-    nonPersistStore.setDay(response.data.day);
+    nonPersistStore.setDate(response.data.date);
   }
 }catch (e) {
-  if (e.response) return  toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
-
-  if (e.request && e.request.status === 0) {
-    return  toast.add({
-      severity:'error', summary: 'Error',
-      detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later',
-      life: 4000});
-  }
-
-  return toast.add({severity:'warn', summary: 'Error',
-    detail: 'Sorry, something went wrong. Please try again later', life: 4000})
-}
+  console.log(e.message)}
 }
 
 //Load images from db if pinia store is empty
-if (!ads.value.length)getImages();
+getImages();
 
 
 //On mounted Hook
 onMounted(() => {
+
+  setInterval(() => {
+    if (today.value){
+      today.value = moment(today.value).add(1, 'seconds');
+    }
+  }, 1000)
+
   const numbers = document.querySelectorAll(".numbers-ball");
+
   for (const number of numbers) {
     number.onclick = function(e){
       if (e.target.classList.contains('active')){
@@ -188,13 +200,11 @@ const stakeNow = async () => {
 }
 
 
-
 </script>
 
 <template>
-  <div style="">
 
-      <!--    Header  -->
+  <!--    Header  -->
     <div class="context text-center text-white">
       <template v-if="loading">
                       <h4 class="text-white" style="margin-top: 5%;">Loading Game Results.....
@@ -206,11 +216,11 @@ const stakeNow = async () => {
                                   <h1 class="text-white"><b>{{ gameDay ? gameDescription(gameDay) : '' }}</b></h1>
 
                                   <div class="d-inline-flex text-center">
-                                    <h1 class="result-numbers">{{ drawResults[0] }}</h1>
-                                    <h1 class="result-numbers">{{ drawResults[1] }}</h1>
-                                    <h1 class="result-numbers">{{ drawResults[2] }}</h1>
-                                    <h1 class="result-numbers">{{ drawResults[3] }}</h1>
-                                    <h1 class="result-numbers">{{ drawResults[4] }}</h1>
+                                    <h1 class="star">{{ drawResults[0] }}</h1>
+                                    <h1 class="star">{{ drawResults[1] }}</h1>
+                                    <h1 class="star">{{ drawResults[2] }}</h1>
+                                    <h1 class="star">{{ drawResults[3] }}</h1>
+                                    <h1 class="star">{{ drawResults[4] }}</h1>
                                   </div>
                     </template>
                     <template v-else>
@@ -234,15 +244,43 @@ const stakeNow = async () => {
       </ul>
     </div >
 
+<!--<template v-if="ads.length">-->
+<!--  <div id="carouselExampleIndicators" class="carousel slide">-->
+<!--    <div class="carousel-indicators">-->
+<!--      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>-->
+<!--      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>-->
+<!--      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>-->
+<!--    </div>-->
+<!--    <div class="carousel-inner">-->
+<!--      <div class="carousel-item active">-->
+<!--        <img src="/img/days/lucky-tuesday.png" class="d-block w-100" alt="...">-->
+<!--      </div>-->
+<!--      <div class="carousel-item">-->
+<!--        <img src="/img/days/fortune-thursday.png" class="d-block w-100" alt="...">-->
+<!--      </div>-->
+<!--      <div class="carousel-item">-->
+<!--        <img src="/img/days/monday-special.png" class="d-block w-100" alt="...">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">-->
+<!--      <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
+<!--      <span class="visually-hidden">Previous</span>-->
+<!--    </button>-->
+<!--    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">-->
+<!--      <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
+<!--      <span class="visually-hidden">Next</span>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</template>-->
 
-    <!-- ........... Carousel ............... -->
+  <!-- ........... Carousel ............... -->
     <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
               :showIndicators="false" :autoplayInterval="4000">
       <template #item="slotProps">
         <div class="product-item">
           <div class="product-item-content">
             <div class="mb-3">
-              <img :src="slotProps.data.name" alt="image" class="img-fluid w-100"/>
+              <img :src="slotProps.data.name" alt="image" class="img-fluid w-100" style="max-height: 320px;"/>
             </div>
           </div>
         </div>
@@ -250,47 +288,49 @@ const stakeNow = async () => {
     </Carousel>
 
 
-  </div>
-  <br>
-
-
-  <div class="container">
+  <div class="container mt-2">
           <!-- ................ Game Day images .................. -->
     <div class="row justify-content-center">
       <div class="col-md-10">
         <div class="card m-0">
           <div class="card-header">
-            <h5 class="text-center">Game Day</h5>
+            <h6 class="text-center" v-if="gameDay  && moment(gameDay).hours() >= 19 && moment(gameDay).hours() < 20">
+              Status: <span class="text-danger">Closed</span>
+            </h6>
+            <h6 class="text-center" v-else>
+              Status: <span class="text-success">Open</span>
+            </h6>
+            <span>{{ today ? moment(today).format('Do MMM YYYY, h:mm:ss a') : '' }}</span>
           </div>
           <div class="card-body">
             <div class="game-images-wrapper">
 
-              <div class="game-image" :class="nonPersistStore.day === 1 ? 'active-day' : ''">
-                <img src="../../public/img/days/monday-special.png" alt="monday-special" class="img-fluid" :class="today !== 1 ? 'img-faded' : ''">
+              <div class="game-image" :class="gameDay  && moment(gameDay).day() === 1 ? 'active-day' : ''">
+                <img src="../../public/img/days/monday-special.png" alt="monday-special" class="img-fluid" :class="gameDay  && moment(gameDay).day() !== 1 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="nonPersistStore.day === 2 ? 'active-day' : ''">
-                <img src="../../public/img/days/lucky-tuesday.png" alt="lucky-tuesday" class="img-fluid"  :class="today !== 2 ? 'img-faded' : ''">
+              <div class="game-image" :class="gameDay && moment(gameDay).day() === 2 ? 'active-day' : ''">
+                <img src="../../public/img/days/lucky-tuesday.png" alt="lucky-tuesday" class="img-fluid"  :class="gameDay && moment(gameDay).day() !== 2 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image"  :class="nonPersistStore.day === 3 ? 'active-day' : ''">
-                <img src="../../public/img/days/mid-week.png" alt="mid-week" class="img-fluid" :class="today !== 3 ? 'img-faded' : ''">
+              <div class="game-image"  :class="gameDay && moment(gameDay).day() === 3 ? 'active-day' : ''">
+                <img src="../../public/img/days/mid-week.png" alt="mid-week" class="img-fluid" :class="gameDay && moment(gameDay).day() !== 3 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="nonPersistStore.day === 4 ? 'active-day' : ''">
-                <img src="../../public/img/days/fortune-thursday.png" alt="fortune-thursday" class="img-fluid" :class="today !== 4 ? 'img-faded' : ''">
+              <div class="game-image" :class="gameDay && moment(gameDay).day() === 4 ? 'active-day' : ''">
+                <img src="../../public/img/days/fortune-thursday.png" alt="fortune-thursday" class="img-fluid" :class="gameDay && moment(gameDay).day() !== 4 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="nonPersistStore.day === 5 ? 'active-day' : ''">
-                <img src="../../public/img/days/friday-bonanza.png" alt="friday-bonanza" class="img-fluid" :class="today !== 5 ? 'img-faded' : ''">
+              <div class="game-image" :class="gameDay && moment(gameDay).day() === 5 ? 'active-day' : ''">
+                <img src="../../public/img/days/friday-bonanza.png" alt="friday-bonanza" class="img-fluid" :class="gameDay && moment(gameDay).day() !== 5 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image" :class="nonPersistStore.day === 6 ? 'active-day' : ''">
-                <img src="../../public/img/days/national-weekly-lotto.png" alt="national-weekly-lotto" class="img-fluid" :class="today !== 6 ? 'img-faded' : ''">
+              <div class="game-image" :class="gameDay && moment(gameDay).day() === 6 ? 'active-day' : ''">
+                <img src="../../public/img/days/national-weekly-lotto.png" alt="national-weekly-lotto" class="img-fluid" :class="gameDay && moment(gameDay).day() !== 6 ? 'img-faded' : ''">
               </div>
 
-              <div class="game-image"  :class="nonPersistStore.day === 0 ? 'active-day' : ''">
-                <img src="../../public/img/days/sunday-aseda.png" alt="sunday-aseda" class="img-fluid" :class="today !== 0 ? 'img-faded' : ''">
+              <div class="game-image"  :class="gameDay && moment(gameDay).day() === 0 ? 'active-day' : ''">
+                <img src="../../public/img/days/sunday-aseda.png" alt="sunday-aseda" class="img-fluid" :class="gameDay && moment(gameDay).day() !== 0 ? 'img-faded' : ''">
               </div>
 
             </div>
@@ -317,7 +357,7 @@ const stakeNow = async () => {
 
                           <!--  .............. Stake Section ..............  -->
     <form @submit.prevent="stakeNow">
-    <div class="row text-center" v-if="stakeFormData.selectedNumbers.length">
+    <div class="row text-center">
 
 <!--      Selected Numbers-->
       <div class="col-sm-6" style="border: 1px solid #ccc">
@@ -329,19 +369,21 @@ const stakeNow = async () => {
 
 
 <!--   Amount Entry   -->
-      <div class="col-sm-6" style="border: 1px solid #ccc" v-if="stakeFormData.selectedNumbers.length > 1">
-          <h6 class="mt-3">Enter Perm Amount (GHS)</h6>
+      <div class="col-sm-6" style="border: 1px solid #ccc">
+          <h6 class="mt-3">Perm Each</h6>
 
         <input type="tel" class="form-control mb-3 shadow-none" minlength="1" maxlength="5"
-               v-model.number="stakeFormData.amountToStake" @input="validateAmount">
+               v-model.number="stakeFormData.amountToStake" @input="validateAmount" placeholder="Amount(GHS)">
       </div>
       <h4 class="mt-3">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
       </h4>
-      <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
-              :loading="stakeInProgress" loadingIcon="spinner-border spinner-border-sm"
-              v-if="stakeFormData.selectedNumbers.length > 1"
-      />
+<!--      <div class="fixed-bottom navbar">-->
+        <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
+                :loading="stakeInProgress" loadingIcon="spinner-border spinner-border-sm"
+                :disabled="stakeFormData.selectedNumbers.length < 2" />
+<!--      </div>-->
+
 
     </div>
 
@@ -361,7 +403,7 @@ const stakeNow = async () => {
   flex-direction: row;
   flex-wrap: wrap;
 }
-.numbers-ball, .numbers-ball-selected, .result-numbers {
+.numbers-ball, .numbers-ball-selected {
   cursor: pointer;
   background-color: #fff;
   width: 35px;
@@ -415,19 +457,35 @@ const stakeNow = async () => {
 
 /* Header styles*/
 
-.result-numbers{
-  border: 1px solid white;
-  background: transparent;
-  color: white;
-  font-weight: normal;
-  height: 1.8em;
-  width: 1.8em;
-  font-size: 1.5em;
-  border-radius: 50px;
-}
+/*.result-numbers{*/
+/*  border: 1px solid white;*/
+/*  background: transparent;*/
+/*  color: white;*/
+/*  font-weight: normal;*/
+/*  height: 1.8em;*/
+/*  width: 1.8em;*/
+/*  font-size: 1.5em;*/
+/*  border-radius: 50px;*/
+/*}*/
 .result-numbers:hover{
   background: transparent;
 }
+
+
+
+.star {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(204, 204, 204, 0.38);
+  color: white;
+  margin: 0 3px;
+  font-weight: normal;
+  height: 2em;
+  width: 2em;
+}
+
 
 @media screen and (min-width: 500px) {
 .result-numbers{
@@ -436,8 +494,6 @@ const stakeNow = async () => {
   font-size: 2em;
 }
 }
-
-
 
 
 

@@ -5,6 +5,7 @@ import Column from 'primevue/column';
 import axios from "../../axios.js";
 import { useHomeStore } from "@/store/home";
 import { formatNumber } from "@/functions";
+import moment from "moment";
 
 const loading = ref(false);
 const store = useHomeStore();
@@ -47,7 +48,7 @@ getData();
 <template>
   <h3 class="pt-5 mt-3 text-center">Transactions</h3>
 
-  <div class="container-fluid">
+  <div class="container-fluid" style="margin-bottom: 50vh;">
     <div class="row">
       <div class="col">
         <div class="table-responsive">
@@ -66,7 +67,7 @@ getData();
             <Column field="createdAt" header="Date" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  {{ new Date(data.createdAt).toLocaleDateString() }} {{ new Date(data.createdAt).toLocaleTimeString() }}
+                  {{ moment(data.createdAt).format("YYYY-MM-DD")}} {{ moment(data.createdAt).format("h:mm:ss a") }}
                 </td>
               </template>
             </Column>
