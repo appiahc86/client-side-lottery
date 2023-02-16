@@ -68,7 +68,6 @@ const registerUser = async () => {
       store.setToken(response.data.token);
 
       router.push({name: 'home'});
-      return toast.add({severity:'success', summary: 'Congrats!', detail:'Registration was successful', life: 4000});
     }
 
 
