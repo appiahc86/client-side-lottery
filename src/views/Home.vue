@@ -49,6 +49,7 @@ const getDrawResults = async () => {
     if (response.status === 200){
       nonPersistStore.setDrawResults(response.data.gameResults);
       nonPersistStore.setDate(response.data.date);
+
     }
   }catch (e) {
     if (e.response) return toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
@@ -213,7 +214,7 @@ const stakeNow = async () => {
                     </template>
 
                     <template v-if="drawResults.length">
-                                  <h1 class="text-white"><b>{{ gameDay ? gameDescription(gameDay) : '' }}</b></h1>
+                                  <h1 class="text-white"><b>{{ gameDescription(nonPersistStore.drawResults[0].drawDate) }}</b></h1>
 
                                   <div class="d-inline-flex text-center">
                                     <h1 class="star">{{ drawResults[0] }}</h1>

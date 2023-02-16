@@ -1,3 +1,4 @@
+import moment from "moment";
 
 export const stakeFunction = (selectedNumbers, amount) => {
    const determiner = selectedNumbers - 1;
@@ -13,7 +14,7 @@ export const formatNumber = (amount) => {
 }
 //
 export const gameDescription = (date) => {
-   const day = new Date(date).getDay();
+   const day = moment(date).day();
    let name = ''
    switch (day) {
       case 0: name = 'Sunday Aseda'
@@ -33,6 +34,7 @@ export const gameDescription = (date) => {
       default: name = ''
            break;
    }
+
    return name;
 }
 
