@@ -460,6 +460,13 @@ const stakeNow = async () => {
   width: 2em;
 }
 
+@media screen and (max-width: 300px) {
+  .star{
+    height: 1.7em;
+    width: 1.7em;
+  }
+}
+
 
 @media screen and (min-width: 500px) {
 .result-numbers{
@@ -472,7 +479,7 @@ const stakeNow = async () => {
 
 
 
-/*                              new.................*/
+/*...........................new.................*/
 
 .context {
   width: 100%;

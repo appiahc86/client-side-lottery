@@ -67,7 +67,7 @@ const logout = () => {
         <span class="h1 pi pi-list" @click="visibleLeft = true" style="cursor: pointer;">
         </span>&nbsp;&nbsp;&nbsp;&nbsp;
         <span @click="router.push({name: 'home'})" style="cursor: pointer;">
-          <img src="/img/logo.PNG" alt="logo" width="100" ></span>
+          <img src="/logo.png" alt="logo" class="logo"></span>
       </div>
 
       <div class="dropdown">
@@ -168,6 +168,10 @@ const logout = () => {
 </template>
 
 <style scoped>
+.logo {
+  width: 5em;
+}
+
 .register-btn {
   font-size: 0.9em;
 }
