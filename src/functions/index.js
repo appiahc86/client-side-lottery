@@ -6,13 +6,10 @@ export const stakeFunction = (selectedNumbers, amount) => {
    return permTotal / 2 || 0;
 }
 
-export const formatNumber = (amount) => {
-   const f = new Intl.NumberFormat("en-us", {
-      maximumFractionDigits: 2
-   })
-   return f.format(amount);
-}
-//
+//Format Number
+export const formatNumber = (num) => num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+
+// Game day
 export const gameDescription = (date) => {
    const day = moment(date).day();
    let name = ''

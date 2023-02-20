@@ -11,6 +11,7 @@ import moment from "moment";
 export const useHomeNonPersistStore = defineStore('homeNonPersistStore', {
     state: () => {
         return {
+            selectedNumbers: [], //this is used during stake
             drawResults: [],
             images: [],
             date: moment()

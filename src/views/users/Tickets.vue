@@ -85,7 +85,14 @@ getData();
                 </td>
               </template>
             </Column>
-            <Column field="amount" header="Amount" class="data-table-font-size">
+            <Column field="amount" header="Perm Amount" class="data-table-font-size">
+              <template #body="{data}">
+                <td>
+                  {{ formatNumber(data.amount) }}
+                </td>
+              </template>
+            </Column>
+            <Column field="payable" header="Payable" class="data-table-font-size">
               <template #body="{data}">
                 <td>
                   {{ formatNumber(data.payable) }}
@@ -96,7 +103,7 @@ getData();
             <Column field="amount" header="Won" class="data-table-font-size">
               <template #body="{data}">
                 <td :class="data.amountWon ? 'text-success fw-bold' : ''">
-                  {{ formatNumber(data.amountWon) || 0 }}
+                  {{ data.amountWon ? formatNumber(data.amountWon) : '0.00' }}
                 </td>
               </template>
             </Column>

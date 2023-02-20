@@ -1,6 +1,6 @@
 <script setup>
 import { io }  from "socket.io-client";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
 import Button from "primevue/button";
@@ -16,7 +16,7 @@ window.toast = useToast();
 const store = useHomeStore();
 const accountLoading = ref(false);
 
-let visibleLeft = ref(false); // this will toggle the sidebar
+//let visibleLeft = ref(false); // this will toggle the sidebar
 let profileSidebar = ref(false); // this will toggle the sidebar for user profile
 
 const socket = io(`${axios.defaults.baseURL}`);
@@ -64,8 +64,8 @@ const logout = () => {
   <nav class="navbar navbar-expand-lg bg-light fixed-top shadow shadow-sm" style="height: 48px;">
     <div class="container-fluid">
       <div class="navbar-brand mb-0">
-        <span class="h1 pi pi-list" @click="visibleLeft = true" style="cursor: pointer;">
-        </span>&nbsp;&nbsp;&nbsp;&nbsp;
+<!--        <span class="h1 pi pi-list" @click="visibleLeft = true" style="cursor: pointer;">-->
+<!--        </span>&nbsp;&nbsp;&nbsp;&nbsp;-->
         <span @click="router.push({name: 'home'})" style="cursor: pointer;">
           <img src="/logo.png" alt="logo" class="logo"></span>
       </div>
@@ -77,8 +77,15 @@ const logout = () => {
           Login <span class="hide-on-sm">/ Register</span>
         </router-link>
 
-        <Avatar icon="pi pi-user" class="mr-2" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
-               v-if="store.token" shape="circle" @click="profileSidebar = true;"/>
+        <template v-if="store.token">
+          <span class="text-center" style="font-size: .8em;">GHS {{ formatNumber(store.user.balance || 0 ) }} &nbsp;
+          <span class="pi pi-sync" style="cursor: pointer;" title="Refresh" @click="reloadAccountBalance" v-if="!accountLoading"></span>
+          <span class="spinner-border spinner-border-sm" v-if="accountLoading"></span>
+        </span> &nbsp;
+          <Avatar icon="pi pi-user" class="mr-2" shape="circle" @click="profileSidebar = true;"
+                  style="background-color:#2196F3; color: #ffffff; cursor: pointer;"/>
+        </template>
+
 
       </div>
     </div>
@@ -90,20 +97,19 @@ const logout = () => {
   <router-view></router-view>
 
 <!--  menu sidebar -->
-  <Sidebar v-model:visible="visibleLeft" :baseZIndex="10000">
-    <ul>
-      <li style="list-style: none">
-        <router-link :to="{name: 'home'}" @click="visibleLeft = false" class="text-decoration-none">&#128250; &nbsp; HOME</router-link></li>
-      <br>
-      <li style="list-style: none">&#128153; &nbsp; NLA</li>
-      <br>
-      <li style="list-style: none">&#128273; &nbsp; RULES</li>
-      <br>
-      <li style="list-style: none">&#9203; &nbsp; RESULTS</li>
-      <br>
-<!--      <li><router-link :to="{name: 'about'}" @click="visibleLeft = false">About</router-link></li>-->
-    </ul>
-  </Sidebar>
+<!--  <Sidebar v-model:visible="visibleLeft" :baseZIndex="10000">-->
+<!--    <ul>-->
+<!--      <li style="list-style: none">-->
+<!--        <router-link :to="{name: 'home'}" @click="visibleLeft = false" class="text-decoration-none">&#128250; &nbsp; HOME</router-link></li>-->
+<!--      <br>-->
+<!--      <li style="list-style: none">&#128153; &nbsp; NLA</li>-->
+<!--      <br>-->
+<!--      <li style="list-style: none">&#128273; &nbsp; RULES</li>-->
+<!--      <br>-->
+<!--      <li style="list-style: none">&#9203; &nbsp; RESULTS</li>-->
+<!--      <br>-->
+<!--    </ul>-->
+<!--  </Sidebar>-->
 
 
 <!--  User profile sidebar-->
@@ -144,23 +150,43 @@ const logout = () => {
 
   <br><br><br><br><br><br>
 <!--  Footer -->
-  <footer class="navbar bg-dark text-white">
+  <footer class="bg-dark text-white pb-3">
 
     <div class="container">
-      <div class="row">
-        <div class="col-sm-7 mt-3">
+      <div class="row justify-content-center text-center">
+
+        <div class="col-sm-4 mt-3">
+          <div class="">
+            <div class="">
+              <router-link :to="{name: 'home'}" class="text-decoration-none text-white">
+                NLA</router-link>
+            </div>
+            <div class="my-3">
+              <router-link :to="{name: 'home'}" class="text-decoration-none text-white">
+                RULES</router-link>
+            </div>
+            <div class="">
+              <router-link :to="{name: 'home'}" class="text-decoration-none text-white mb-2">
+                RESULTS</router-link>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-sm-4 mt-3">
           <div class="">&copy; All Right Reserved 2023, <span class="text-warning">Nanty </span></div>
         </div>
-        <div class="col-sm-5 mt-3">
+
+        <div class="col-sm-4 mt-3">
           <div class="d-flex text-center">
             <div class="mx-auto">
               <a><span class="pi pi-facebook" style="font-size: 1.6em"></span></a>
               <a ><span class="pi pi-youtube mx-4" style="font-size: 1.6em"></span></a>
               <a ><span class="pi pi-twitter" style="font-size: 1.6em"></span></a>
             </div>
-
           </div>
         </div>
+
       </div>
     </div>
 

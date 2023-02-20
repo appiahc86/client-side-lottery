@@ -36,7 +36,7 @@ watch(() => today.value, (value) => {
 
 //Stake Form Data
 let stakeFormData = reactive({
-  amountToStake: null, selectedNumbers: []
+  amountToStake: null,
 })
 
 const stakeInProgress = ref(false); //Sets loading status when staking lottery
@@ -81,7 +81,7 @@ try {
   console.log(e.message)}
 }
 
-//Load images from db if pinia store is empty
+//Load images from db if pinia store
 getImages();
 
 
@@ -96,17 +96,30 @@ onMounted(() => {
 
   const numbers = document.querySelectorAll(".numbers-ball");
 
+  //If store.selected numbers is not empty, check and set class to active in numbers
+  if (nonPersistStore.selectedNumbers.length){
+      for (const element of numbers) {
+        for (const num of nonPersistStore.selectedNumbers) {
+          if (element.innerHTML.toString() === num.toLocaleString()){
+            element.classList.add('active');
+          }
+      }
+    }
+  }
+
+
+
   for (const number of numbers) {
     number.onclick = function(e){
       if (e.target.classList.contains('active')){
         e.target.classList.remove('active');
-        stakeFormData.selectedNumbers = stakeFormData.selectedNumbers.filter(num => num !== parseInt(e.target.innerText));
-      }else if (stakeFormData.selectedNumbers.length < 10 && !e.target.classList.contains('active')){
+        nonPersistStore.selectedNumbers = nonPersistStore.selectedNumbers.filter(num => num !== parseInt(e.target.innerText));
+      }else if (nonPersistStore.selectedNumbers.length < 10 && !e.target.classList.contains('active')){
         e.target.classList.add('active');
-        return stakeFormData.selectedNumbers.push(parseInt(e.target.innerText))
+        return nonPersistStore.selectedNumbers.push(parseInt(e.target.innerText))
 
 
-      }else if (stakeFormData.selectedNumbers.length > 9 && !e.target.classList.contains('active'))
+      }else if (nonPersistStore.selectedNumbers.length > 9 && !e.target.classList.contains('active'))
         return  toast.add({severity:'warn', summary: 'Sorry!', detail:'You cannot select more than 10 numbers', life: 4000});
     }
   }
@@ -115,12 +128,12 @@ onMounted(() => {
 //Watch amount if it changes, update payable
 watch(() => stakeFormData.amountToStake, (value) => {
   if (value < 0) stakeFormData.amountToStake = 0;
-  payable.value =  stakeFunction(stakeFormData.selectedNumbers.length, stakeFormData.amountToStake);
+  payable.value =  stakeFunction(nonPersistStore.selectedNumbers.length, stakeFormData.amountToStake);
 })
 
 //Watch selectedNumbers if it changes, update payable
-watch(() => stakeFormData.selectedNumbers.length, (value) => {
-  payable.value =  stakeFunction(stakeFormData.selectedNumbers.length, stakeFormData.amountToStake);
+watch(() => nonPersistStore.selectedNumbers.length, (value) => {
+  payable.value =  stakeFunction(nonPersistStore.selectedNumbers.length, stakeFormData.amountToStake);
 })
 
 //Validate amount
@@ -137,8 +150,8 @@ const stakeNow = async () => {
 
   try {
 
-    // // validation
-    if (stakeFormData.selectedNumbers.length < 2) {
+     // validation
+    if (nonPersistStore.selectedNumbers.length < 2) {
       return toast.add({severity:'warn', summary: 'Error', detail: 'Please Select at least two numbers', life: 4000});
     }
 
@@ -158,7 +171,10 @@ const stakeNow = async () => {
     //Send Data To Server
     const response = await  axios.post(
         '/lottery/stake',
-        JSON.stringify(stakeFormData),
+        JSON.stringify({
+          amountToStake: stakeFormData.amountToStake,
+          selectedNumbers: nonPersistStore.selectedNumbers
+        }),
         {
           headers: { 'Authorization': `Bearer ${store.token}`}
         }
@@ -170,7 +186,7 @@ const stakeNow = async () => {
     }
 
       //Clear Form Data
-      stakeFormData.selectedNumbers = [];
+      nonPersistStore.selectedNumbers = [];
       stakeFormData.amountToStake = null;
       payable.value = 0;
 
@@ -266,17 +282,17 @@ const stakeNow = async () => {
     <div class="row justify-content-center">
       <div class="col-md-10">
         <div class="card m-0">
-          <div class="card-header">
+          <div class="card-header text-center">
             <h6 class="text-center" v-if="gameDay  && moment(gameDay).hours() >= 19 && moment(gameDay).hours() < 20">
-              Status: <span class="text-danger">Closed</span>
+              Status: <span class="text-danger fw-bold">CLOSED</span>
             </h6>
-            <h6 class="text-center" v-else>
-              Status: <span class="text-success">Open</span>
+            <h6 v-else>
+              Status: <span class="text-success fw-bold">OPEN</span>
             </h6>
             <span v-if="today">{{ today ? moment(today).format('Do MMM YYYY, h:mm:ss a') : '' }}</span>
-            <span v-else class="invisible">.............</span>
+            <span v-else class="invisible">..</span>
           </div>
-          <div class="card-body">
+          <div class="card-body px-0">
             <div class="game-images-wrapper">
 
               <div class="game-image" :class="gameDay  && moment(gameDay).day() === 1 ? 'active-day' : ''">
@@ -336,7 +352,7 @@ const stakeNow = async () => {
 <!--      Selected Numbers-->
       <div class="col-sm-6" style="border: 1px solid #ccc">
         <h6 class="mt-3">Selected Numbers</h6>
-                <template v-for="num in stakeFormData.selectedNumbers" :key="num">
+                <template v-for="num in nonPersistStore.selectedNumbers" :key="num">
                   <div class="numbers-ball-selected d-inline-flex">{{ num }}</div>
                 </template>
       </div>
@@ -344,7 +360,7 @@ const stakeNow = async () => {
 
 <!--   Amount Entry   -->
       <div class="col-sm-6" style="border: 1px solid #ccc">
-          <h6 class="mt-3">Perm Each</h6>
+          <h6 class="mt-3">Perm Each Number</h6>
 
         <input type="tel" class="form-control mb-3 shadow-none" minlength="1" maxlength="5"
                v-model.number="stakeFormData.amountToStake" @input="validateAmount" placeholder="Amount(GHS)">
@@ -355,7 +371,7 @@ const stakeNow = async () => {
 <!--      <div class="fixed-bottom navbar">-->
         <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
                 :loading="stakeInProgress" loadingIcon="spinner-border spinner-border-sm"
-                :disabled="stakeFormData.selectedNumbers.length < 2" />
+                :disabled="nonPersistStore.selectedNumbers.length < 2" />
 <!--      </div>-->
 
 
@@ -413,9 +429,18 @@ const stakeNow = async () => {
   box-sizing: border-box;
 }
 .game-image img {
-  width: 80px;
-  height: 50px;
+  width: 5em;
+  height: 3em;
 }
+
+@media screen and (max-width: 600px) {
+  .game-image img{
+    width: 3em;
+    height: 2em;
+  }
+}
+
+
 .img-faded {
   --webkit-filter: grayscale(100%);
   filter: grayscale(100%);
@@ -426,21 +451,6 @@ const stakeNow = async () => {
 }
 
 
-
-
-
-/* Header styles*/
-
-/*.result-numbers{*/
-/*  border: 1px solid white;*/
-/*  background: transparent;*/
-/*  color: white;*/
-/*  font-weight: normal;*/
-/*  height: 1.8em;*/
-/*  width: 1.8em;*/
-/*  font-size: 1.5em;*/
-/*  border-radius: 50px;*/
-/*}*/
 .result-numbers:hover{
   background: transparent;
 }
