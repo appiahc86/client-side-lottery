@@ -78,12 +78,14 @@ const logout = () => {
         </router-link>
 
         <template v-if="store.token">
-          <span class="text-center" style="font-size: .8em;">GHS {{ formatNumber(store.user.balance || 0 ) }} &nbsp;
-          <span class="pi pi-sync" style="cursor: pointer;" title="Refresh" @click="reloadAccountBalance" v-if="!accountLoading"></span>
-          <span class="spinner-border spinner-border-sm" v-if="accountLoading"></span>
+          <span class="text-center p-1"
+                style="font-size: .8em; border: 1px solid rgba(180,101,101,0.51); cursor: pointer;"
+                @click="profileSidebar = true;">
+            <span>&#128100;</span>
+            GHS {{ formatNumber(store.user.balance || 0 ) }} &nbsp;
         </span> &nbsp;
-          <Avatar icon="pi pi-user" class="mr-2" shape="circle" @click="profileSidebar = true;"
-                  style="background-color:#2196F3; color: #ffffff; cursor: pointer;"/>
+<!--          <Avatar icon="pi pi-user" class="mr-2" shape="circle" @click="profileSidebar = true;"-->
+<!--                  style="background-color:#2196F3; color: #ffffff; cursor: pointer;"/>-->
         </template>
 
 

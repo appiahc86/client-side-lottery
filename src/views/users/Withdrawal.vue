@@ -26,12 +26,6 @@ if (network) {
 }
 })
 
-//Validate amount
-const validateAmount = (e) => {
-  e.target.value = e.target.value.replace(/[^0-9]/g, '');
-  e.target.value = e.target.value.replace(/(\..*)\./g, '$1');
-}
-
 
           //................Submit withdrawal request......................
 const withdraw = async () => {
@@ -45,8 +39,8 @@ const withdraw = async () => {
 
     if (amount.value < 1) return toast.add({severity:'warn', summary: 'Error',
       detail: `Minimum amount should be 1`, life: 4000});
-    if (amount.value > 2000) return toast.add({severity:'warn', summary: 'Error',
-      detail: `Maximum amount should be 2,000`, life: 4000});
+    if (amount.value > 30000) return toast.add({severity:'warn', summary: 'Error',
+      detail: `Maximum amount should be 30,000`, life: 4000});
 
     //Send Data To Server
     const response = await  axios.post(
@@ -101,8 +95,8 @@ const withdraw = async () => {
             </template>
           </Dropdown><br><br>
           <div class="field">
-            <input type="tel" v-model.number="amount" minlength="1" maxlength="4" aria-describedby="username2-help"
-                   class="p-inputtext w-100 rounded-pill px-3" placeholder="Amount" required @input="validateAmount">
+            <input type="number" v-model.number="amount" min="1" step="0.01" max="30000" aria-describedby="username2-help"
+                   class="p-inputtext w-100 rounded-pill px-3" placeholder="Amount" required>
           </div>
           <div class="text-center">
             <Button label="Withdraw" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
@@ -110,7 +104,7 @@ const withdraw = async () => {
           </div>
           <br>
           <ol class="">
-            <li class="text-muted"><small>Maximum withdrawal amount is GHS 2,000</small></li>
+            <li class="text-muted"><small>Maximum withdrawal amount is GHS 30,000</small></li>
             <li class="text-muted"><small>Minimum withdrawal amount is GHS 1</small></li>
           </ol>
 

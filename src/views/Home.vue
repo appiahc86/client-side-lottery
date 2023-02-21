@@ -136,12 +136,6 @@ watch(() => nonPersistStore.selectedNumbers.length, (value) => {
   payable.value =  stakeFunction(nonPersistStore.selectedNumbers.length, stakeFormData.amountToStake);
 })
 
-//Validate amount
-const validateAmount = (e) => {
-  e.target.value = e.target.value.replace(/[^0-9]/g, '');
-  e.target.value = e.target.value.replace(/(\..*)\./g, '$1');
-}
-
 //Stake Lottery
 const stakeNow = async () => {
   if (!store.token) return router.push({name: 'register-login'})
@@ -362,8 +356,8 @@ const stakeNow = async () => {
       <div class="col-sm-6" style="border: 1px solid #ccc">
           <h6 class="mt-3">Perm Each Number</h6>
 
-        <input type="tel" class="form-control mb-3 shadow-none" minlength="1" maxlength="5"
-               v-model.number="stakeFormData.amountToStake" @input="validateAmount" placeholder="Amount(GHS)">
+        <input type="number" class="form-control mb-3 shadow-none" min="1" step="0.01"
+               v-model.number="stakeFormData.amountToStake" placeholder="Amount(GHS)">
       </div>
       <h4 class="mt-3">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
