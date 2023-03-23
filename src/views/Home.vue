@@ -9,6 +9,7 @@ import {useHomeStore} from "@/store/home";
 import router from "../router/index.js";
 import { useHomeNonPersistStore } from "@/store/homeNonPersist";
 
+const userPromos = ref(null);
 const nonPersistStore = useHomeNonPersistStore();
 const store = useHomeStore();
 const payable = ref(0);
@@ -62,7 +63,7 @@ const getDrawResults = async () => {
   }finally { loading.value = false }
 }
 //Load images from db if pinia store is empty
-if (!drawResults.value.length)getDrawResults();
+if (!drawResults.value.length) getDrawResults();
 
 // this function will get carousel images
 const getImages = async () => {
@@ -81,8 +82,28 @@ try {
   console.log(e.message)}
 }
 
-//Load images from db if pinia store
+//Load images from db to pinia store
 getImages();
+
+
+//Get user's promos
+const getPromos = async () => {
+  try {
+    const response = await axios.get('/get-user-promos',
+        {
+          headers: {'Authorization': `Bearer ${store.token}`}
+        }
+    )
+
+    if (response.status === 200) {
+      userPromos.value = response.data;
+    }
+  } catch (e) {
+    console.clear();
+  }
+}
+
+// if (store.token) getPromos();
 
 
 //On mounted Hook
@@ -215,18 +236,32 @@ const stakeNow = async () => {
 
 <template>
 
+<div class="mt-5">
+
+
+  <!-- ........... Carousel ............... -->
+  <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
+            :showIndicators="false" :autoplayInterval="4000" class="d-sm-none">
+    <template #item="slotProps">
+      <div class="product-item">
+        <div class="product-item-content">
+          <div>
+            <img :src="slotProps.data.name" alt="image" class="img-fluid w-100" style="max-height: 320px;"/>
+          </div>
+        </div>
+      </div>
+    </template>
+  </Carousel>
+
   <!--    Header  -->
     <div class="context text-center text-white">
-      <template v-if="loading">
-                      <h4 class="text-white" style="margin-top: 5%;">Loading Game Results.....
-                        <span class="spinner-border spinner-border-sm"></span>
-                      </h4>
-                    </template>
 
                     <template v-if="drawResults.length">
-                                  <h1 class="text-white"><b>{{ gameDescription(nonPersistStore.drawResults[0].drawDate) }}</b></h1>
+                                  <h1 class="text-white">
+                                    <b>{{ gameDescription(nonPersistStore.drawResults[0].drawDate) }}</b>
+                                  </h1>
 
-                                  <div class="d-inline-flex text-center">
+                                  <div class="d-inline-flex text-center results-container pb-2">
                                     <h1 class="star">{{ drawResults[0] }}</h1>
                                     <h1 class="star">{{ drawResults[1] }}</h1>
                                     <h1 class="star">{{ drawResults[2] }}</h1>
@@ -237,28 +272,16 @@ const stakeNow = async () => {
                     <template v-else>
                       <h3 class="text-white" style="margin-top: 4%">Welcome to Nanty</h3>
                     </template>
+
     </div>
 
 
-    <div class="area" >
-      <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-    </div >
+
 
 
   <!-- ........... Carousel ............... -->
     <Carousel :value="ads" :numVisible="1" :numScroll="1" :circular="true" :showNavigators="false"
-              :showIndicators="false" :autoplayInterval="4000">
+              :showIndicators="false" :autoplayInterval="4000" class="d-none d-sm-block">
       <template #item="slotProps">
         <div class="product-item">
           <div class="product-item-content">
@@ -359,7 +382,11 @@ const stakeNow = async () => {
         <input type="number" class="form-control mb-3 shadow-none" min="1" step="0.01"
                v-model.number="stakeFormData.amountToStake" placeholder="Amount(GHS)">
       </div>
-      <h4 class="mt-3">Payable:
+
+      <h6 v-if="userPromos" class="mt-2 text-warning">
+        First deposit bonus: <mark>{{ formatNumber(userPromos.amount) }}</mark>
+      </h6>
+      <h4 class="mt-2">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
       </h4>
 <!--      <div class="fixed-bottom navbar">-->
@@ -375,6 +402,7 @@ const stakeNow = async () => {
     </form>
   </div>
 
+</div>
 </template>
 
 
@@ -445,9 +473,9 @@ const stakeNow = async () => {
 }
 
 
-.result-numbers:hover{
-  background: transparent;
-}
+/*.result-numbers:hover{*/
+/*  background: transparent;*/
+/*}*/
 
 
 
@@ -456,8 +484,7 @@ const stakeNow = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(204, 204, 204, 0.38);
-  color: white;
+  background: rgba(168, 48, 48, 0.38);
   margin: 0 3px;
   font-weight: normal;
   height: 2em;
@@ -482,140 +509,10 @@ const stakeNow = async () => {
 
 
 
-
-/*...........................new.................*/
-
 .context {
-  width: 100%;
-  position: absolute;
-  top: 13%;
-}
-
-.context h1{
-  text-align: center;
-  color: #fff;
-}
-
-
-.area{
-  background: #4e54c8;
-  background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
-  width: 100%;
-  height: 40vh;
-}
-
-.circles{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: inherit;
-  overflow: hidden;
-}
-
-.circles li{
-  position: absolute;
-  display: block;
-  list-style: none;
-  width: 20px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  animation: animate 25s linear infinite;
-  bottom: -150px;
-
-}
-
-.circles li:nth-child(1){
-  left: 25%;
-  width: 80px;
-  height: 80px;
-  animation-delay: 0s;
-}
-
-
-.circles li:nth-child(2){
-  left: 10%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 2s;
-  animation-duration: 12s;
-}
-
-.circles li:nth-child(3){
-  left: 70%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 4s;
-}
-
-.circles li:nth-child(4){
-  left: 40%;
-  width: 60px;
-  height: 60px;
-  animation-delay: 0s;
-  animation-duration: 18s;
-}
-
-.circles li:nth-child(5){
-  left: 65%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 0s;
-}
-
-.circles li:nth-child(6){
-  left: 75%;
-  width: 110px;
-  height: 110px;
-  animation-delay: 3s;
-}
-
-.circles li:nth-child(7){
-  left: 35%;
-  width: 150px;
-  height: 150px;
-  animation-delay: 7s;
-}
-
-.circles li:nth-child(8){
-  left: 50%;
-  width: 25px;
-  height: 25px;
-  animation-delay: 15s;
-  animation-duration: 45s;
-}
-
-.circles li:nth-child(9){
-  left: 20%;
-  width: 15px;
-  height: 15px;
-  animation-delay: 2s;
-  animation-duration: 35s;
-}
-
-.circles li:nth-child(10){
-  left: 85%;
-  width: 150px;
-  height: 150px;
-  animation-delay: 0s;
-  animation-duration: 11s;
+  background: linear-gradient(45deg, #adff2f, #9e9eff, #ff4670);
 }
 
 
 
-@keyframes animate {
-
-  0%{
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-    border-radius: 0;
-  }
-
-  100%{
-    transform: translateY(-1000px) rotate(720deg);
-    opacity: 0;
-    border-radius: 50%;
-  }
-
-}
 </style>
