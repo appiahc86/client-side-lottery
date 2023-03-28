@@ -395,8 +395,8 @@ const stakeNow = async () => {
                v-model.number="stakeFormData.amountToStake" placeholder="Amount(GHS)">
       </div>
 
-      <h6 v-if="userPromos" class="mt-2 text-warning">
-        First deposit bonus: <mark>{{ formatNumber(userPromos.amount) }}</mark>
+      <h6 v-if="userPromos" class="mt-2 text-primary">
+        First deposit bonus: <mark class="fw-bold">{{ formatNumber(userPromos.amount) }}</mark>
       </h6>
       <h4 class="mt-2">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
