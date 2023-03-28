@@ -64,6 +64,7 @@ const registerUser = async () => {
     if (response.status === 201) {
       store.user.network = store.network;
       store.user.phone = store.registrationPhoneNumber;
+      store.user.balance = 0;
       store.clearRegistrationData();
       store.setToken(response.data.token);
 
