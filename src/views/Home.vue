@@ -375,7 +375,8 @@ const stakeNow = async () => {
 
                           <!--  .............. Stake Section ..............  -->
     <form @submit.prevent="stakeNow">
-    <div class="row text-center bg-light">
+      <div class="container-fluid" style="background: white;">
+    <div class="row text-center">
 
 <!--      Selected Numbers-->
       <div class="col-sm-6" style="border: 1px solid #ccc">
@@ -400,15 +401,15 @@ const stakeNow = async () => {
       <h4 class="mt-2">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
       </h4>
-<!--      <div class="fixed-bottom navbar">-->
+
         <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
                 :loading="stakeInProgress" loadingIcon="spinner-border spinner-border-sm"
                 :disabled="nonPersistStore.selectedNumbers.length < 2" />
-<!--      </div>-->
+
 
 
     </div>
-
+</div>
 
     </form>
 
