@@ -37,7 +37,7 @@ watch(() => today.value, (value) => {
 
 //Stake Form Data
 let stakeFormData = reactive({
-  amountToStake: null,
+  amountToStake: null
 })
 
 const stakeInProgress = ref(false); //Sets loading status when staking lottery
@@ -103,7 +103,7 @@ const getPromos = async () => {
   }
 }
 
-// if (store.token) getPromos();
+if (store.token) getPromos();
 
 
 //On mounted Hook
@@ -121,7 +121,7 @@ onMounted(() => {
   if (nonPersistStore.selectedNumbers.length){
       for (const element of numbers) {
         for (const num of nonPersistStore.selectedNumbers) {
-          if (element.innerHTML.toString() === num.toLocaleString()){
+          if (element.innerHTML.toString() === num.toString()){
             element.classList.add('active');
           }
       }
@@ -165,6 +165,9 @@ const stakeNow = async () => {
 
   try {
 
+    let bonus = 0;
+    if (userPromos.value) bonus = parseFloat(userPromos.value.amount);
+
      // validation
     if (nonPersistStore.selectedNumbers.length < 2) {
       return toast.add({severity:'warn', summary: 'Error', detail: 'Please Select at least two numbers', life: 4000});
@@ -174,7 +177,7 @@ const stakeNow = async () => {
       return toast.add({severity:'warn', summary: 'Error', detail: 'Amount should be at least GHS 1', life: 4000});
     }
 
-    if (parseFloat(store.user.balance) < parseInt(payable.value)){
+    if ((parseFloat(store.user.balance) + bonus ) < parseFloat(payable.value)){
       return toast.add({severity:'warn', summary: 'Error', detail: 'Balance is not sufficient', life: 4000});
     }
 
@@ -188,6 +191,7 @@ const stakeNow = async () => {
         '/lottery/stake',
         JSON.stringify({
           amountToStake: stakeFormData.amountToStake,
+          promo: userPromos.value ? userPromos.value.id : null,
           selectedNumbers: nonPersistStore.selectedNumbers
         }),
         {
@@ -196,7 +200,14 @@ const stakeNow = async () => {
     )
 
     if (response.status === 201) {
-      store.user.balance  = parseFloat(store.user.balance) - parseFloat(payable.value);
+      store.user.balance  = parseFloat(response.data.balance);
+      if (response.data.bonusLeft <= 0){
+        userPromos.value = null;
+      }
+      if (userPromos.value && response.data.bonusLeft > 0){
+        userPromos.value.amount = parseFloat(response.data.bonusLeft);
+      }
+
       toast.add({severity:'success', summary: 'Thank You', detail: 'Your Stake was successful!', life: 4000});
     }
 
@@ -212,7 +223,6 @@ const stakeNow = async () => {
       }
 
   }catch (e) {
-
     if (e.response) return  toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
 
     if (e.request && e.request.status === 0) {
@@ -236,7 +246,7 @@ const stakeNow = async () => {
 
 <template>
 
-<div class="mt-5">
+<div class="mt-5" style="background: rgba(27,24,47,0.87);">
 
 
   <!-- ........... Carousel ............... -->
@@ -349,7 +359,7 @@ const stakeNow = async () => {
 
 
                 <!-- ............. Numbers ............... -->
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mb-2">
       <div class="col p-3" style="background: rgb(84,77,150);">
 
           <h6 class="text-white">You Cannot Select More Than 10 Numbers</h6>
@@ -361,10 +371,11 @@ const stakeNow = async () => {
 
       </div>
     </div>
+  </div>
 
                           <!--  .............. Stake Section ..............  -->
     <form @submit.prevent="stakeNow">
-    <div class="row text-center">
+    <div class="row text-center bg-light">
 
 <!--      Selected Numbers-->
       <div class="col-sm-6" style="border: 1px solid #ccc">
@@ -400,7 +411,7 @@ const stakeNow = async () => {
 
 
     </form>
-  </div>
+
 
 </div>
 </template>
@@ -484,7 +495,7 @@ const stakeNow = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(168, 48, 48, 0.38);
+  background: rgba(27,24,47,0.87);
   margin: 0 3px;
   font-weight: normal;
   height: 2em;
@@ -510,9 +521,8 @@ const stakeNow = async () => {
 
 
 .context {
-  background: linear-gradient(45deg, #adff2f, #9e9eff, #ff4670);
+  background: linear-gradient(80deg, #151521F4, #573eb4);
 }
-
 
 
 </style>

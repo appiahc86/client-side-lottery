@@ -73,7 +73,7 @@ const logout = () => {
       <div class="dropdown">
 
         <router-link :to="{name: 'register-login'}" v-if="!store.token"
-                     class="btn btn-primary btn-sm text-decoration-none register-btn">
+                     class="btn btn-outline-danger btn-sm text-decoration-none register-btn text-dark">
           Login <span class="hide-on-sm">/ Register</span>
         </router-link>
 
