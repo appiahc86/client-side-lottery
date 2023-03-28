@@ -69,7 +69,7 @@ const deposit = async () => {
         paymentDialog.value.addEventListener('cancel', (e) => e.preventDefault());
       }
 
-      // return toast.add({severity:'success', detail: response.data, life: 4000});
+
     }
 
   }catch (e) {
@@ -102,8 +102,8 @@ const verifyPayment = async () => {
     )
 
     if (response.status === 200) {
-      if (response.data.balance !== 0){
-        store.user.balance = response.data.balance;
+      if (parseFloat(response.data.amount) !== 0){
+        store.user.balance = parseFloat(store.user.balance) + parseFloat(response.data.amount);
       }
       referenceNumber.value = '';
     }
