@@ -148,8 +148,8 @@ const requestSMS = async () => {
                 <div class="input-group-prepend">
                   <div class="input-group-text">+233</div>
                 </div>
-                <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="loginData.phoneNumber"
-                       @input="validatePhoneNumber">
+                <input type="tel" class="form-control shadow-none" maxlength="10"
+                       v-model.number="loginData.phoneNumber" @input="validatePhoneNumber">
               </div>
 
               <br>

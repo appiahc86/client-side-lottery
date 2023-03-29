@@ -98,22 +98,6 @@ const logout = () => {
 
   <router-view></router-view>
 
-<!--  menu sidebar -->
-<!--  <Sidebar v-model:visible="visibleLeft" :baseZIndex="10000">-->
-<!--    <ul>-->
-<!--      <li style="list-style: none">-->
-<!--        <router-link :to="{name: 'home'}" @click="visibleLeft = false" class="text-decoration-none">&#128250; &nbsp; HOME</router-link></li>-->
-<!--      <br>-->
-<!--      <li style="list-style: none">&#128153; &nbsp; NLA</li>-->
-<!--      <br>-->
-<!--      <li style="list-style: none">&#128273; &nbsp; RULES</li>-->
-<!--      <br>-->
-<!--      <li style="list-style: none">&#9203; &nbsp; RESULTS</li>-->
-<!--      <br>-->
-<!--    </ul>-->
-<!--  </Sidebar>-->
-
-
 <!--  User profile sidebar-->
   <Sidebar v-model:visible="profileSidebar" :baseZIndex="10000"  position="right">
 
@@ -204,7 +188,7 @@ const logout = () => {
   font-size: 0.9em;
 }
 .register-btn:hover {
-  background: #580270 !important;
+  background: #ccc !important;
 }
 
 
