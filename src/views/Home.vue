@@ -96,7 +96,8 @@ const getPromos = async () => {
     )
 
     if (response.status === 200) {
-      userPromos.value = response.data;
+      userPromos.value = response.data.promos;
+      if (store.user) store.user.balance = parseFloat(response.data.balance)
     }
   } catch (e) {
     console.clear();
