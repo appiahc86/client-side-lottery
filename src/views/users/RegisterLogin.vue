@@ -4,12 +4,10 @@ import Button from 'primevue/button';
 import TabPanel from "primevue/tabpanel";
 import TabView from "primevue/tabview";
 import RadioButton from 'primevue/radiobutton';
-import {onBeforeRouteLeave, useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 import axios from "../../axios.js";
 import { useHomeStore } from "@/store/home";
 
-const closeModal = ref();
-const openModal = ref();
 const store = useHomeStore();
 const router = useRouter();
 const showPassword = ref(false);
@@ -30,14 +28,8 @@ const selectedNetwork = ref(null);
 //on mounted hook show modal
 onMounted(() => {
 if (store.token) return router.push({name: 'home'});
-  openModal.value.click();
 })
 
-//Close modal before leaving this page
-onBeforeRouteLeave( (to, from, next) => {
-  closeModal.value.click();
-  next();
-})
 
 //Validate phone number
 const validatePhoneNumber = (e) => {
@@ -133,155 +125,142 @@ const requestSMS = async () => {
 
 <template>
 
-<!--  this button launches the modal -->
-  <button type="button" ref="openModal" class="d-none mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#authModal"></button>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5 col-xl-4 mt-3 mt-md-5">
 
-  <!-- Modal -->
-  <div class="modal" id="authModal" tabindex="-1" data-bs-keyboard="false" aria-labelledby="authModal" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="container-fluid mt-0">
-            <div class="row justify-content-center">
-              <div class="col-md-6 col-lg-5 col-xl-4">
+      <h3 style="float: right; margin-left: 10px; width: 30px; cursor: pointer;"
+          class="text-danger border-0 float-end"
+          @click="router.push({name: 'home'})" title="Close">X</h3>&nbsp;
+      <br><br>
 
-                <h3 style="float: right; margin-left: 10px; width: 30px; cursor: pointer;"
-                        class="text-danger border-0 float-end"
-                        @click="router.push({name: 'home'})" title="Close">X</h3>&nbsp;
-                <br><br>
+      <div class="card shadow">
+        <TabView>
 
-                <div class="card shadow">
-                <TabView>
-
-                  <!--   Login -->
-                  <TabPanel header="Login">
-                    <form @submit.prevent="login">
-                      <template v-if="loginError">
-                        <p class="text-danger text-center" id="errorMessage">{{ loginError }}</p>
-                      </template>
-                      Please Enter Phone Number
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <div class="input-group-text">+233</div>
-                        </div>
-                        <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="loginData.phoneNumber"
-                               @input="validatePhoneNumber">
-                      </div>
-
-                      <br>
-                      <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                             v-model="loginData.password" placeholder="Password" maxlength="200">
-
-                      <div class="form-check mt-3">
-                        <input class="form-check-input" id="showPassword" type="checkbox" v-model="showPassword">
-                        <label class="form-check-label" for="showPassword">
-                          Show Password
-                        </label>
-                      </div>
-
-                      <div class="text-center">
-                        <Button label="Login" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
-                                class="p-button  p-button-rounded mt-2"/>
-
-                      </div>
-
-                    </form>
-                    <br>
-                    <h6>Forgot your password? click <router-link :to="{name: 'forgot-password'}">here</router-link></h6>
-                  </TabPanel>
-
-                  <!--  Register  -->
-                  <TabPanel header="Register">
-
-                    <form @submit.prevent="requestSMS">
-                      <template v-if="registerError">
-                        <p class="text-danger text-center" id="errorMessage">{{ registerError }}</p>
-                      </template>
-
-                      Register with your momo number
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <div class="input-group-text">+233</div>
-                        </div>
-                        <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="registerData.phoneNumber"
-                               @input="validatePhoneNumber">
-                      </div>
-                      <br>
-
-                      <div class="">
-                        <table class="w-100">
-                          <tr>
-                            <th>
-                              <label for="">
-                                <img src="/img/icons/mtn.webp" alt="mtn_logo">
-                                <RadioButton name="network" value="mtn" v-model="selectedNetwork" required/>
-                              </label>
-                            </th>
-                            <th>
-                              <label for="">
-                                <img src="/img/icons/vodafone.webp" alt="vodafone_logo">
-                                <RadioButton name="network" value="vodafone" v-model="selectedNetwork" required/>
-                              </label>
-                            </th>
-                            <th>
-                              <label for="">
-                                <img src="/img/icons/airteltigo.webp" alt="airteltigo_logo">
-                                <RadioButton name="network" value="airtelTigo" v-model="selectedNetwork" required/>
-                              </label>
-                            </th>
-                          </tr>
-
-                          <tr class="">
-                            <td>Mtn</td>
-                            <td>Vodafone</td>
-                            <td>AirtelTigo</td>
-                          </tr>
-                        </table>
-
-
-                      </div>
-
-                      <br>
-                      <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                             v-model="registerData.password" placeholder="Password" maxlength="100">
-                      <br>
-                      <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
-                             v-model="registerData.password_confirmation" placeholder="Confirm Password" maxlength="100">
-
-                      <div class="form-check mt-3">
-                        <input class="form-check-input" id="showRegisterPassword" type="checkbox" v-model="showPassword">
-                        <label class="form-check-label" for="showRegisterPassword">
-                          Show Password
-                        </label>
-                      </div>
-                      <p style="line-height: 0.7em">
-                        <small class="text-muted" style="font-size: 0.8em;">
-                          Password must be at least 6 characters long and contains at least one uppercase letter,
-                          one lowercase letter, and one digit.
-                        </small>
-                      </p>
-
-                      <div class="text-center">
-                        <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
-                                class="p-button  p-button-rounded mt-2"/>
-                      </div>
-
-                    </form>
-                  </TabPanel>
-
-                </TabView>
+          <!--   Login -->
+          <TabPanel header="Login">
+            <form @submit.prevent="login">
+              <template v-if="loginError">
+                <p class="text-danger text-center" id="errorMessage">{{ loginError }}</p>
+              </template>
+              Please Enter Phone Number
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">+233</div>
+                </div>
+                <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="loginData.phoneNumber"
+                       @input="validatePhoneNumber">
               </div>
 
-              </div>
-            </div>
-          </div>
+              <br>
+              <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                     v-model="loginData.password" placeholder="Password" maxlength="200">
 
-          <!-- this button closes the modal -->
-          <button type="button" class="d-none" data-bs-dismiss="modal" ref="closeModal"></button>
-        </div>
+              <div class="form-check mt-3">
+                <input class="form-check-input" id="showPassword" type="checkbox" v-model="showPassword">
+                <label class="form-check-label" for="showPassword">
+                  Show Password
+                </label>
+              </div>
+
+              <div class="text-center">
+                <Button label="Login" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
+                        class="p-button  p-button-rounded mt-2"/>
+
+              </div>
+
+            </form>
+            <br>
+            <h6>Forgot your password? click <router-link :to="{name: 'forgot-password'}">here</router-link></h6>
+          </TabPanel>
+
+          <!--  Register  -->
+          <TabPanel header="Register">
+
+            <form @submit.prevent="requestSMS">
+              <template v-if="registerError">
+                <p class="text-danger text-center" id="errorMessage">{{ registerError }}</p>
+              </template>
+
+              Register with your momo number
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">+233</div>
+                </div>
+                <input type="tel" class="form-control shadow-none" maxlength="10" v-model.number="registerData.phoneNumber"
+                       @input="validatePhoneNumber">
+              </div>
+              <br>
+
+              <div class="">
+                <table class="w-100">
+                  <tr>
+                    <th>
+                      <label for="">
+                        <img src="/img/icons/mtn.webp" alt="mtn_logo">
+                        <RadioButton name="network" value="mtn" v-model="selectedNetwork" required/>
+                      </label>
+                    </th>
+                    <th>
+                      <label for="">
+                        <img src="/img/icons/vodafone.webp" alt="vodafone_logo">
+                        <RadioButton name="network" value="vodafone" v-model="selectedNetwork" required/>
+                      </label>
+                    </th>
+                    <th>
+                      <label for="">
+                        <img src="/img/icons/airteltigo.webp" alt="airteltigo_logo">
+                        <RadioButton name="network" value="airtelTigo" v-model="selectedNetwork" required/>
+                      </label>
+                    </th>
+                  </tr>
+
+                  <tr class="">
+                    <td>Mtn</td>
+                    <td>Vodafone</td>
+                    <td>AirtelTigo</td>
+                  </tr>
+                </table>
+
+
+              </div>
+
+              <br>
+              <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                     v-model="registerData.password" placeholder="Password" maxlength="100">
+              <br>
+              <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none"
+                     v-model="registerData.password_confirmation" placeholder="Confirm Password" maxlength="100">
+
+              <div class="form-check mt-3">
+                <input class="form-check-input" id="showRegisterPassword" type="checkbox" v-model="showPassword">
+                <label class="form-check-label" for="showRegisterPassword">
+                  Show Password
+                </label>
+              </div>
+              <p style="line-height: 0.7em">
+                <small class="text-muted" style="font-size: 0.8em;">
+                  Password must be at least 6 characters long and contains at least one uppercase letter,
+                  one lowercase letter, and one digit.
+                </small>
+              </p>
+
+              <div class="text-center">
+                <Button label="Register" type="submit" :loading="loadingInProgress" loadingIcon="spinner-border spinner-border-sm"
+                        class="p-button  p-button-rounded mt-2"/>
+              </div>
+
+            </form>
+          </TabPanel>
+
+        </TabView>
       </div>
+
     </div>
   </div>
+</div>
+
+
 
 </template>
 
@@ -291,14 +270,6 @@ const requestSMS = async () => {
 img {
   width: 37px;
   margin-right: .5em;
-}
-
-
-.modal-body {
-  width: 100%;
-  height: 100vh;
-  animation: gradient 2s infinite alternate linear;
-  background: hsl(283, 10%, 86%);
 }
 
 

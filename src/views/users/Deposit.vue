@@ -4,7 +4,10 @@ import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
 import {useHomeStore} from "@/store/home";
 import axios from "../../axios.js";
+import {useRouter} from "vue-router";
 
+
+const router = useRouter();
 const amount = ref();
 const loadingInProgress = ref(false);
 const loading = ref(false);
@@ -161,6 +164,11 @@ const submitOtp = async () => {
     <h3 class="text-center">Deposit</h3>
     <div class="row justify-content-center">
       <div class="col-sm-6 col-md-5">
+
+        <h3 style="float: right; margin-left: 10px; width: 30px; cursor: pointer;"
+            class="text-danger border-0 float-end"
+            @click="router.push({name: 'home'})" title="Close">X</h3>&nbsp;
+        <br><br>
         <form  @submit.prevent="deposit">
           <input type="text" class="p-inputtext w-100 p-disabled rounded-pill px-3" :value="store.user.phone" disabled><br><br>
           <Dropdown v-model="selectedNetwork" :options="networks" optionLabel="name" class="w-100 rounded-pill px-2">

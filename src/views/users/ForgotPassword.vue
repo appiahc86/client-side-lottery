@@ -1,14 +1,12 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
 import Button from 'primevue/button';
-import {onBeforeRouteLeave, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import axios from "../../axios.js";
 import { useHomeStore } from "@/store/home";
 
 const showNewPasswordForm = ref(false);
 const store = useHomeStore();
-const closeModal = ref();
-const openModal = ref();
 const router = useRouter();
 const error = ref('');
 const loadingInProgress = ref(false);
@@ -24,13 +22,7 @@ const resetPasswordData = reactive({
 //on mounted hook show modal
 onMounted(() => {
   if (store.token) return router.push({name: 'home'});//Redirect home
-  openModal.value.click();
 })
-
-onBeforeRouteLeave((to, from, next) => { //on route leave clear verification data from store
-  closeModal.value.click();
-  next();
-});
 
 
 //Validate input
@@ -125,15 +117,7 @@ const resetPassword = async () => {
 
 <template>
 
-  <!--  this button launches the modal -->
-  <button type="button" ref="openModal" class="d-none mt-5 mb-5" data-bs-toggle="modal" data-bs-target="#authModal"></button>
-
-  <!-- Modal -->
-  <div class="modal" id="authModal" tabindex="-1" data-bs-keyboard="false" aria-labelledby="authModal" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="container-fluid mt-3">
+          <div class="container-fluid mt-5">
             <div class="row justify-content-center">
               <div class="col-md-6 col-lg-5 col-xl-4 mt-5">
 
@@ -200,22 +184,10 @@ const resetPassword = async () => {
             </div>
           </div>
 
-          <!-- this button closes the modal -->
-          <button type="button" class="d-none" data-bs-dismiss="modal" ref="closeModal"></button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="d-none d-sm-block" style="margin-top: 200px;"></div>
 </template>
 
 
 <style scoped>
-@media screen and (min-width: 500px) {
-  #myDialog {
-    width: 500px;
-  }
-  #errorMessage {
-    max-width: 500px;
-  }
-}
+
 </style>

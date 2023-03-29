@@ -316,7 +316,10 @@ const stakeNow = async () => {
             <h6 v-else>
               Status: <span class="text-success fw-bold">OPEN</span>
             </h6>
-            <span v-if="today">{{ today ? moment(today).format('Do MMM YYYY, h:mm:ss a') : '' }}</span>
+            <span v-if="today">
+              <span class="fw-bold">Today's Game: </span>
+              {{ today ? moment(today).format('h:mm:ss a') : '' }}
+            </span>
             <span v-else class="invisible">..</span>
           </div>
           <div class="card-body px-0">
@@ -396,7 +399,7 @@ const stakeNow = async () => {
       </div>
 
       <h6 v-if="userPromos" class="mt-2 text-primary">
-        First deposit bonus: <mark class="fw-bold">{{ formatNumber(userPromos.amount) }}</mark>
+        First deposit bonus: <mark class="fw-bold">GHS {{ formatNumber(userPromos.amount) }}</mark>
       </h6>
       <h4 class="mt-2">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
