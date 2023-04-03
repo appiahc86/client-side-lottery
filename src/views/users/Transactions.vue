@@ -6,7 +6,9 @@ import axios from "../../axios.js";
 import { useHomeStore } from "@/store/home";
 import { formatNumber } from "@/functions";
 import moment from "moment";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const loading = ref(false);
 const store = useHomeStore();
 const data = ref([]);
@@ -46,7 +48,13 @@ getData();
 </script>
 
 <template>
-  <h3 class="pt-5 mt-3 text-center">Transactions</h3>
+  <h3 class="pt-5 mt-3 text-center">Transactions
+    <span style="float: right; margin-left: 10px; width: 30px; cursor: pointer;"
+          class="text-danger border-0 float-end"
+          @click="router.push({name: 'home'})" title="Close">
+  X
+</span>
+  </h3>
 
   <div class="container-fluid" style="margin-bottom: 50vh;">
     <div class="row">

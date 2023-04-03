@@ -3,6 +3,7 @@ import axios from "axios";
 import {useHomeStore} from "./store/home.js";
 
 
+// axios.defaults.baseURL = "http://localhost:3000";
 // axios.defaults.baseURL = "http://192.168.1.101:3000";
 axios.defaults.baseURL = "https://test.christrevivalch.org";
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';

@@ -3,7 +3,7 @@ import Home from '../views/Home.vue';
 import About from '../views/About.vue';
 import userRoutes from "./users/index.js"
 
-import {useHomeStore} from "../store/home.js";
+import {useHomeStore} from "@/store/home";
 
 
 const routes = [
