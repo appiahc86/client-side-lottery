@@ -173,19 +173,18 @@ const stakeNow = async () => {
 
      // validation
     if (nonPersistStore.selectedNumbers.length < 2) {
-      return toast.add({severity:'warn', summary: 'Error', detail: 'Please Select at least two numbers', life: 4000});
+      return toast.add({severity:'warn', detail: 'Please Select at least two numbers', life: 4000});
     }
 
     if (!stakeFormData.amountToStake || stakeFormData.amountToStake < 1){
-      return toast.add({severity:'warn', summary: 'Error', detail: 'Amount should be at least GHS 1', life: 4000});
+      return toast.add({severity:'warn', detail: 'Amount should be at least GHS 1', life: 4000});
     }
 
     if ((parseFloat(store.user.balance) + bonus ) < parseFloat(payable.value)){
-      return toast.add({severity:'warn', summary: 'Error', detail: 'Balance is not sufficient', life: 4000});
+      return toast.add({severity:'warn', detail: 'Balance is not sufficient', life: 4000});
     }
 
-    if (payable.value < 1) return toast.add({severity:'warn', summary: 'Error',
-      detail: `Minimum amount should be 1`, life: 4000});
+    if (payable.value < 1) return toast.add({severity:'warn', detail: `Minimum amount should be 1`, life: 4000});
 
 
 
@@ -211,7 +210,7 @@ const stakeNow = async () => {
         userPromos.value.amount = parseFloat(response.data.bonusLeft);
       }
 
-      toast.add({severity:'success', summary: 'Thank You', detail: 'Your Stake was successful!', life: 4000});
+      toast.add({severity:'success', detail: 'Your Stake was successful!', life: 4000});
     }
 
       //Clear Form Data
@@ -226,7 +225,7 @@ const stakeNow = async () => {
       }
 
   }catch (e) {
-    if (e.response) return  toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
+    if (e.response) return  toast.add({severity:'warn', detail: e.response.data, life: 4000});
 
     if (e.request && e.request.status === 0) {
       return  toast.add({
