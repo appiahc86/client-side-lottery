@@ -20,6 +20,7 @@ const ads = computed(() => nonPersistStore.getImages);
 const drawResults = computed(() => nonPersistStore.getDrawResults);
 const gameDay = ref(null);
 
+const gameStatus = ref(true)
 
 //Watch date from store. if it changes, update 'today' variable
 watch(() => nonPersistStore.date, (value) => {
@@ -77,9 +78,10 @@ try {
   if (response.status === 200) {
     nonPersistStore.setImages(response.data.images);
     nonPersistStore.setDate(response.data.date);
+    gameStatus.value = !!response.data.gameStatus;
   }
-}catch (e) {
-  console.log(e.message)}
+}catch (e) { console.clear() }
+
 }
 
 //Load images from db to pinia store
@@ -311,7 +313,7 @@ const stakeNow = async () => {
       <div class="col-md-10">
         <div class="card m-0">
           <div class="card-header text-center">
-            <h6 class="text-center" v-if="gameDay  && moment(gameDay).hours() >= 19 && moment(gameDay).hours() < 20">
+            <h6 class="text-center" v-if="(gameDay  && moment(gameDay).hours() >= 19 && moment(gameDay).hours() < 20) || !gameStatus">
               Status: <span class="text-danger fw-bold">CLOSED</span>
             </h6>
             <h6 v-else>
