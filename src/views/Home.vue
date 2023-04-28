@@ -147,6 +147,22 @@ onMounted(() => {
         return  toast.add({severity:'warn', summary: 'Sorry!', detail:'You cannot select more than 10 numbers', life: 4000});
     }
   }
+
+
+  //scroll event sticky play button
+  const stickyButton = document.querySelector('.fixed-bottom');
+  const playGameBtn = document.querySelector('.play-game');
+  window.addEventListener('scroll', () => {
+    const containerRect = playGameBtn.getBoundingClientRect();
+
+    if (containerRect.top < window.innerHeight) {
+      stickyButton.style.display = "none";
+    }else  stickyButton.style.display = "block"
+
+  }); // ./sticky button
+
+
+
 })
 
 //Watch amount if it changes, update payable
@@ -306,7 +322,7 @@ const stakeNow = async () => {
     </Carousel>
 
 
-  <div class="container mt-2">
+  <div class="container mb-5 mt-3">
           <!-- ................ Game Day images .................. -->
     <div class="row justify-content-center">
       <div class="col-md-10">
@@ -373,7 +389,6 @@ const stakeNow = async () => {
               <div class="numbers-ball">{{ num }}</div>
             </template>
           </div>
-
       </div>
     </div>
   </div>
@@ -407,14 +422,25 @@ const stakeNow = async () => {
         <span class="text-danger">{{ formatNumber(payable) }}</span>
       </h4>
 
-        <Button label="Play Game" type="submit" class="p-button-rounded p-button-sm w-50 mx-auto mt-3"
+      <div class="text-center">
+        <Button label="Play Game" type="submit"
+                class="p-button-rounded mt-3 play-game fw-bold"
                 :loading="stakeInProgress" loadingIcon="spinner-border spinner-border-sm"
-                :disabled="nonPersistStore.selectedNumbers.length < 2" />
+        />
+      </div>
 
-
+<!--      :disabled="nonPersistStore.selectedNumbers.length < 2" -->
 
     </div>
 </div>
+
+
+      <div class="fixed-bottom text-center">
+          <Button label="Play Game" type="submit"
+                  class="p-button-rounded fw-bold"
+                  :loading="stakeInProgress" loadingIcon="spinner-border spinner-border-sm"
+                  />
+      </div>
 
     </form>
 

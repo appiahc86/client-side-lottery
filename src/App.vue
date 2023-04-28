@@ -177,6 +177,7 @@ const logout = () => {
     </div>
 
   </footer>
+
 </template>
 
 <style scoped>
