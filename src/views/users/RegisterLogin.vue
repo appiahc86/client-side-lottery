@@ -7,6 +7,7 @@ import RadioButton from 'primevue/radiobutton';
 import { useRouter } from "vue-router";
 import axios from "../../axios.js";
 import { useHomeStore } from "@/store/home";
+import CryptoJS from "crypto-js";
 
 const store = useHomeStore();
 const router = useRouter();
@@ -103,7 +104,10 @@ const requestSMS = async () => {
     )
 
     if (response.status === 200) {
-      store.setRegistrationData(registerData.phoneNumber, registerData.password, selectedNetwork.value, response.data.message);
+      const bytes = CryptoJS.AES.decrypt(response.data.message, 'secretKey@');
+      const decryptedData = parseInt(bytes.toString(CryptoJS.enc.Utf8));
+
+      store.setRegistrationData(registerData.phoneNumber, registerData.password, selectedNetwork.value, decryptedData);
       return router.push({name: 'verify'});
     }
 

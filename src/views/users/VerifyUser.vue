@@ -3,6 +3,7 @@ import {onMounted, ref, watch} from "vue";
 import Button from 'primevue/button';
 import {useRouter} from "vue-router";
 import axios from "../../axios.js";
+import CryptoJS from 'crypto-js';
 import { useHomeStore } from "@/store/home";
 
 const store = useHomeStore();
@@ -15,9 +16,9 @@ const loadingInProgress = ref(false);
 
 //on mounted hook show modal
 onMounted(() => {
-  if (!store.registrationPhoneNumber || !store.pass || store.token) return  router.push({name: 'home'}); //Redirect home
+  if (!store.registrationPhoneNumber || !store.pass || store.token)
+    return  router.push({name: 'home'}); //Redirect home
 })
-
 
 
 //Validate input
