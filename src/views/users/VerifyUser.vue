@@ -48,6 +48,7 @@ const registerUser = async () => {
         '/users/auth/register',
         JSON.stringify({
           phoneNumber: store.registrationPhoneNumber,
+          accountName: store.accountName,
           password: store.pass,
           network: store.network
         })

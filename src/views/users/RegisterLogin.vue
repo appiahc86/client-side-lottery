@@ -104,10 +104,12 @@ const requestSMS = async () => {
     )
 
     if (response.status === 200) {
-      const bytes = CryptoJS.AES.decrypt(response.data.message, 'secretKey@');
+      const bytes = CryptoJS.AES.decrypt(response.data.verificationCode, 'secretKey@');
       const decryptedData = parseInt(bytes.toString(CryptoJS.enc.Utf8));
 
-      store.setRegistrationData(registerData.phoneNumber, registerData.password, selectedNetwork.value, decryptedData);
+
+      store.setRegistrationData(registerData.phoneNumber, response.data.accountName,
+          registerData.password, selectedNetwork.value, decryptedData);
       return router.push({name: 'verify'});
     }
 
@@ -207,8 +209,8 @@ const requestSMS = async () => {
                     </th>
                     <th>
                       <label for="">
-                        <img src="/img/icons/vodafone.webp" alt="vodafone_logo">
-                        <RadioButton name="network" value="vodafone" v-model="selectedNetwork" required/>
+                        <img src="/img/icons/telecel.png" alt="vodafone_logo">
+                        <RadioButton name="network" value="telecel" v-model="selectedNetwork" required/>
                       </label>
                     </th>
                     <th>
@@ -221,7 +223,7 @@ const requestSMS = async () => {
 
                   <tr class="">
                     <td>Mtn</td>
-                    <td>Vodafone</td>
+                    <td>Telecel</td>
                     <td>AirtelTigo</td>
                   </tr>
                 </table>

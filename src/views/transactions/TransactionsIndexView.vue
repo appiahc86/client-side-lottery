@@ -87,7 +87,15 @@ getData();
                 </td>
               </template>
             </Column>
-            <Column field="transactionType" header="Type" class="data-table-font-size"></Column>
+            <Column field="transactionType" header="Type"
+                    class="data-table-font-size text-capitalize">
+              <template #body="{data}">
+                <td :style="{color: data.transactionType === 'deposit' ? 'green' : 'brown' }"
+                    class="fw-bold">
+                  {{ data.transactionType }}
+                </td>
+              </template>
+            </Column>
             <Column field="status" header="Status" class="data-table-font-size">
               <template #body="{data}">
                 <td class="text-capitalize">

@@ -11,6 +11,7 @@ export const useHomeStore = defineStore('homeStore', {
     state: () => {
         return {
             registrationPhoneNumber: null,
+            accountName: "",
             pass: "",
             network: "",
             verificationCode: null,
@@ -26,8 +27,9 @@ export const useHomeStore = defineStore('homeStore', {
     actions: {
 
       //Set registration data
-     setRegistrationData (num, password, network, vCode){
+     setRegistrationData (num,accountName, password, network, vCode){
         this.registrationPhoneNumber = num;
+        this.accountName = accountName;
         this.pass = password;
         this.verificationCode = vCode;
         this.network = network;
@@ -36,9 +38,10 @@ export const useHomeStore = defineStore('homeStore', {
         //Clear registration data
      clearRegistrationData(){
         this.registrationPhoneNumber = null;
-        this.pass = '';
+        this.pass = "";
         this.verificationCode = null;
-        this.network = '';
+        this.network = "";
+        this.accountName = ""
     },
 
         //Set Token
@@ -58,7 +61,8 @@ export const useHomeStore = defineStore('homeStore', {
     persist: {
        key: '_loda',
             storage: sessionStorage,
-            paths: ['registrationPhoneNumber', 'pass', 'verificationCode', 'token', 'user', 'network'],
+            paths: ['registrationPhoneNumber', 'accountName', 'pass',
+                'verificationCode', 'token', 'user', 'network'],
             serializer: {
                 deserialize: parse,
                 serialize: stringify

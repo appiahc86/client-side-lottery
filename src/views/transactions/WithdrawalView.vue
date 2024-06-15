@@ -12,13 +12,13 @@ const loadingInProgress = ref(false);
 const store = useHomeStore();
 const networks = ref([
   {name: 'Mtn', value: 'mtn', icon: '/img/icons/mtn.webp'},
-  {name: 'Vodafone', value: 'vodafone', icon: '/img/icons/vodafone.webp'},
+  {name: 'Telecel', value: 'telecel', icon: '/img/icons/telecel.png'},
   {name: 'Airtel Tigo', value: 'airtelTigo', icon: '/img/icons/airteltigo.webp'}
 ])
 const selectedNetwork = ref({name: 'Please Select Network', value: '', icon: ''});
 
 onMounted(() => {
-const network = store.user.network;
+const network = store?.user?.network;
 if (network) {
   const nn = networks.value.filter(net => {
     return net.value === network;
@@ -26,7 +26,14 @@ if (network) {
 
   selectedNetwork.value = nn[0];
 }
+
+// restrict dropdown networks to user's network
+  networks.value = networks.value.filter((network) => {
+    return network.value === store?.user?.network;
+  })
+
 })
+
 
 
           //................Submit withdrawal request......................
@@ -36,7 +43,7 @@ const withdraw = async () => {
     loadingInProgress.value = true
 
     //Validation
-    if (!selectedNetwork.value.value) return toast.add({severity:'warn', summary: 'Error',
+    if (!selectedNetwork?.value?.value) return toast.add({severity:'warn', summary: 'Error',
       detail: `Please select Service provider`, life: 4000});
 
     if (amount.value < 1) return toast.add({severity:'warn', summary: 'Error',
@@ -55,8 +62,8 @@ const withdraw = async () => {
 
     if (response.status === 200) {
       amount.value = null;
-      store.user.balance = parseFloat(response.data.balance);
-      return toast.add({severity:'success', summary: 'Success', detail: `Your request has been received and its processing`, life: 5000});
+      return toast.add({severity:'success', summary: 'Success',
+        detail: `Your request has been received and will be processed soon.`, life: 5000});
     }
 
   }catch (e) {
@@ -71,6 +78,9 @@ const withdraw = async () => {
       life: 4000});
   }finally { loadingInProgress.value = false; }
 }
+
+
+
 
 </script>
 

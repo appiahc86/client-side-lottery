@@ -3,9 +3,9 @@ import ForgotPassword from "../../views/users/ForgotPassword.vue";
 import VerifyUser from "../../views/users/VerifyUser.vue";
 import Tickets from "../../views/users/Tickets.vue";
 import Profile from "../../views/users/Profile.vue";
-import Deposit from "../../views/users/Deposit.vue";
-import Withdrawal from "../../views/users/Withdrawal.vue";
-import Transactions from "../../views/users/Transactions.vue";
+import Deposit from "../../views/transactions/DepositView.vue";
+import Withdrawal from "../../views/transactions/WithdrawalView.vue";
+import Transactions from "../../views/transactions/TransactionsIndexView.vue";
 
 
 const userRoutes = [
