@@ -383,7 +383,7 @@ const stakeNow = async () => {
     <div class="row justify-content-center mb-2">
       <div class="col p-3" style="background: rgb(84,77,150);">
 
-          <h6 class="text-white">You Cannot Select More Than 10 Numbers</h6>
+          <h6 class="text-white">You Can Select Up To 10 Numbers</h6>
           <div class="numbers-ball-container">
             <template v-for="num in 90">
               <div class="numbers-ball">{{ num }}</div>
@@ -411,7 +411,7 @@ const stakeNow = async () => {
       <div class="col-sm-6" style="border: 1px solid #ccc">
           <h6 class="mt-3">Perm Each Number</h6>
 
-        <input type="number" class="form-control mb-3 shadow-none" min="1" step="0.01"
+        <input type="number" class="form-control mb-3 shadow-none" min="1" step="0.5"
                v-model.number="stakeFormData.amountToStake" placeholder="Amount(GHS)">
       </div>
 
