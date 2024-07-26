@@ -41,7 +41,7 @@ let stakeFormData = reactive({
   amountToStake: null
 })
 
-const stakeInProgress = ref(false); //Sets loading status when staking lottery
+const stakeInProgress = ref(false); //Sets loading status when staking
 
 
 //this function will get current game results from server
@@ -63,7 +63,9 @@ const getDrawResults = async () => {
 
   }finally { loading.value = false }
 }
-//Load images from db if pinia store is empty
+
+
+//Load Results from db if pinia store is empty
 if (!drawResults.value.length) getDrawResults();
 
 // this function will get carousel images
@@ -192,15 +194,15 @@ const stakeNow = async () => {
       return toast.add({severity:'warn', detail: 'Please Select at least two numbers', life: 4000});
     }
 
-    if (!stakeFormData.amountToStake || stakeFormData.amountToStake < 1){
-      return toast.add({severity:'warn', detail: 'Amount should be at least GHS 1', life: 4000});
+    if (!payable.value || payable.value < 1){
+      return toast.add({severity:'warn', detail: 'Payable should be at least GHS 1', life: 4000});
     }
 
     if ((parseFloat(store.user.balance) + bonus ) < parseFloat(payable.value)){
       return toast.add({severity:'warn', detail: 'Balance is not sufficient', life: 4000});
     }
 
-    if (payable.value < 1) return toast.add({severity:'warn', detail: `Minimum amount should be 1`, life: 4000});
+    if (payable.value < 1) return toast.add({severity:'warn', detail: `Payable cannot be less than 1`, life: 4000});
 
 
 
@@ -411,8 +413,8 @@ const stakeNow = async () => {
       <div class="col-sm-6" style="border: 1px solid #ccc">
           <h6 class="mt-3">Perm Each Number</h6>
 
-        <input type="number" class="form-control mb-3 shadow-none" min="1" step="0.5"
-               v-model.number="stakeFormData.amountToStake" placeholder="Amount(GHS)">
+        <input type="number" class="form-control mb-3 shadow-none" min="0.1" step="0.1"
+               v-model.number="stakeFormData.amountToStake" placeholder="Amount(GHS)" required>
       </div>
 
       <h6 v-if="userPromos" class="mt-2 text-primary">
