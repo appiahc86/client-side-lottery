@@ -14,6 +14,7 @@ const nonPersistStore = useHomeNonPersistStore();
 const store = useHomeStore();
 const payable = ref(0);
 const loading = ref(false);
+const todayDrawPerformed = ref(false);
 
 const today = ref(null);
 const ads = computed(() => nonPersistStore.getImages);
@@ -30,7 +31,7 @@ watch(() => nonPersistStore.date, (value) => {
 
 watch(() => today.value, (value) => {
   gameDay.value = value;
-  if (moment(value).hours() >= 20){
+  if (moment(value).hours() >= 20 || !!todayDrawPerformed.value){
     gameDay.value = moment(value).add(1, 'days')
   }
 })
@@ -68,7 +69,7 @@ const getDrawResults = async () => {
 //Load Results from db if pinia store is empty
 if (!drawResults.value.length) getDrawResults();
 
-// this function will get carousel images
+// this function will get carousel images. will also check if today's draw is performed
 const getImages = async () => {
 try {
   const response = await  axios.get('/images',
@@ -81,6 +82,7 @@ try {
     nonPersistStore.setImages(response.data.images);
     nonPersistStore.setDate(response.data.date);
     gameStatus.value = !!response.data.gameStatus;
+    todayDrawPerformed.value = !!response.data.todayDrawPerformed;
   }
 }catch (e) { console.clear() }
 

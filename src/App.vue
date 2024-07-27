@@ -160,7 +160,7 @@ const logout = () => {
         </div>
 
         <div class="col-sm-4 mt-3">
-          <div class="">&copy; All Right Reserved 2023, <span class="text-warning">Nanty </span></div>
+          <div class="">&copy; All Right Reserved 2024, <span class="text-warning">Nanty </span></div>
         </div>
 
         <div class="col-sm-4 mt-3">

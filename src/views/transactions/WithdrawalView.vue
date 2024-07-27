@@ -62,6 +62,7 @@ const withdraw = async () => {
 
     if (response.status === 200) {
       amount.value = null;
+      if (store.user) store.user.balance = parseFloat(response.data.balance)
       return toast.add({severity:'success', summary: 'Success',
         detail: `Your request has been received and will be processed soon.`, life: 5000});
     }

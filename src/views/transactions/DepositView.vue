@@ -26,13 +26,14 @@ const store = useHomeStore();
 
 
       <ol class="">
-        <li class="">Transfer the desired amount to 0544xxxxxxx(MTN).</li>
-        <li class="">Name on account: Nanty Lotto Ent</li>
+        <li class="">Transfer the desired amount to <b>053 968 3509</b>(MTN).</li>
+        <li class="">Name on account: DANIEL YEBOAH OFOSU</li>
         <li class="">Use Your login number as reference.</li>
       </ol>
 
-      <p>NB: Should you wish to follow up on your payment, kindly
-        send a message to our Whatsapp: +233 544xxxxxx or Call +233 544xxxxxxx
+      <p>NB: Should you wish to follow up on your payment, kindly send a message to our Whatsapp:
+       <a href="https://api.whatsapp.com/send?phone=233539683509" target="_blank">053 968 3509</a> or Call
+        <a href="tel:+233539683509">053 968 3509</a>
       </p>
 
     </div>
