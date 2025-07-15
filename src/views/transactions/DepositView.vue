@@ -26,7 +26,7 @@ const store = useHomeStore();
 
 
       <ol class="">
-        <li class="">Transfer the desired amount to <b>053 968 3509</b>(MTN).</li>
+        <li class="">Transfer the desired amount to <b>055 045 2587</b>(MTN).</li>
         <li class="">Name on account: DANIEL YEBOAH OFOSU</li>
         <li class="">Use Your login number as reference.</li>
       </ol>
