@@ -17,26 +17,8 @@ const networks = ref([
 ])
 const selectedNetwork = ref({name: 'Please Select Network', value: '', icon: ''});
 
-onMounted(() => {
-const network = store?.user?.network;
-if (network) {
-  const nn = networks.value.filter(net => {
-    return net.value === network;
-  })
 
-  selectedNetwork.value = nn[0];
-}
-
-// restrict dropdown networks to user's network
-  networks.value = networks.value.filter((network) => {
-    return network.value === store?.user?.network;
-  })
-
-})
-
-
-
-          //................Submit withdrawal request......................
+//................Submit withdrawal request......................
 const withdraw = async () => {
   try {
 
@@ -81,8 +63,42 @@ const withdraw = async () => {
 }
 
 
+// reload account balance
+const reloadAccountBalance = async () => {
+
+  try {
+    const response = await  axios.get('/users/transactions/balance',
+        {
+          headers: { 'Authorization': `Bearer ${store.token}`}
+        }
+    )
+
+    if (response.status === 200) {
+      return store.user.balance = response.data.balance;
+    }
+  }catch (e) { console.clear(); }
+
+}
 
 
+onMounted(() => {
+  reloadAccountBalance();
+
+  const network = store?.user?.network;
+  if (network) {
+    const nn = networks.value.filter(net => {
+      return net.value === network;
+    })
+
+    selectedNetwork.value = nn[0];
+  }
+
+// restrict dropdown networks to user's network
+  networks.value = networks.value.filter((network) => {
+    return network.value === store?.user?.network;
+  })
+
+})
 </script>
 
 
@@ -100,10 +116,10 @@ const withdraw = async () => {
           <input type="text" class="p-inputtext w-100 p-disabled rounded-pill px-3" :value="store.user.phone" disabled><br><br>
           <Dropdown v-model="selectedNetwork" :options="networks" optionLabel="name" class="w-100 rounded-pill px-2">
             <template #value="slotProps">
-                <div class="d-flex">
-                  <img :src="slotProps.value.icon" />
-                  <div>{{slotProps.value.name}}</div>
-                </div>
+              <div class="d-flex">
+                <img :src="slotProps.value.icon" />
+                <div>{{slotProps.value.name}}</div>
+              </div>
             </template>
             <template #option="slotProps">
               <div class="d-flex">

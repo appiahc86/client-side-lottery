@@ -26,7 +26,8 @@ const getData = async () => {
     )
 
     if (response.status === 200) {
-      data.value = response.data;
+      data.value = response.data.data;
+      store.user.balance = response.data.balance;
     }
 
 
@@ -72,17 +73,17 @@ getData();
               <h6 class="text-white fw-bold">Loading Data Please wait. <span class="spinner-border spinner-border-sm"></span></h6>
 
             </template>
-            <Column field="createdAt" header="Date" class="data-table-font-size">
+            <Column field="created_at" header="Date" class="data-table-font-size">
               <template #body="{data}">
                 <td>
-                  {{ moment(data.createdAt).format("YYYY-MM-DD")}} {{ moment(data.createdAt).format("h:mm:ss a") }}
+                  {{ moment(data.created_at).format("DD-MMM-YYYY")}} {{ moment(data.created_at).format("h:mm:ss a") }}
                 </td>
               </template>
             </Column>
             <Column field="referenceNumber" header="Reference No." class="data-table-font-size"></Column>
             <Column field="amount" header="Amount" class="data-table-font-size">
               <template #body="{data}">
-                <td>
+                <td class="fw-bold">
                   {{ formatNumber(data.amount) }}
                 </td>
               </template>
@@ -90,7 +91,7 @@ getData();
             <Column field="transactionType" header="Type"
                     class="data-table-font-size text-capitalize">
               <template #body="{data}">
-                <td :style="{color: data.transactionType === 'deposit' ? 'green' : 'brown' }"
+                <td :style="{color: data.transactionType === 'deposit' ? 'green' : 'red' }"
                     class="fw-bold">
                   {{ data.transactionType }}
                 </td>
@@ -100,7 +101,7 @@ getData();
               <template #body="{data}">
                 <td class="text-capitalize">
                   <span class="badge bg-secondary" style="font-size: 0.9em" v-if="data.status === 'pending'">{{ data.status }}</span>
-                  <span class="badge bg-success" style="font-size: 0.9em" v-if="data.status === 'successful'">{{ data.status }}</span>
+                  <span class="badge bg-success" style="font-size: 0.9em" v-if="data.status === 'success'">{{ data.status }}</span>
                   <span class="badge bg-danger" style="font-size: 0.9em" v-if="data.status === 'failed'">{{ data.status }}</span>
                 </td>
               </template>

@@ -9,7 +9,7 @@ import {useHomeStore} from "@/store/home";
 import router from "../router/index.js";
 import { useHomeNonPersistStore } from "@/store/homeNonPersist";
 
-const userPromos = ref(null);
+
 const nonPersistStore = useHomeNonPersistStore();
 const store = useHomeStore();
 const payable = ref(0);
@@ -45,34 +45,10 @@ let stakeFormData = reactive({
 const stakeInProgress = ref(false); //Sets loading status when staking
 
 
-//this function will get current game results from server
-const getDrawResults = async () => {
-  try {
-    const response = await axios.get('/game-results');
-    if (response.status === 200){
-      nonPersistStore.setDrawResults(response.data.gameResults);
-      nonPersistStore.setDate(response.data.date);
-
-    }
-  }catch (e) {
-    if (e.response) return toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
-
-    if (e.request && e.request.status === 0) {
-      return toast.add({severity:'error', summary: 'Error', detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later', life: 4000});
-    }
-    return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, something went wrong. Please try reloading', life: 4000});
-
-  }finally { loading.value = false }
-}
-
-
-//Load Results from db if pinia store is empty
-if (!drawResults.value.length) getDrawResults();
-
 // this function will get carousel images. will also check if today's draw is performed
-const getImages = async () => {
+const getData = async () => {
 try {
-  const response = await  axios.get('/images',
+  const response = await  axios.get('/',
       {
         headers: { 'Authorization': `Bearer ${store.token}`}
       }
@@ -83,34 +59,27 @@ try {
     nonPersistStore.setDate(response.data.date);
     gameStatus.value = !!response.data.gameStatus;
     todayDrawPerformed.value = !!response.data.todayDrawPerformed;
+    nonPersistStore.setDrawResults(response.data.gameResults);
+
+    if(response.data.balance) store.user.balance = parseFloat(response.data.balance);
+
   }
-}catch (e) { console.clear() }
+}catch (e) {
+  if (e.response) return toast.add({severity:'warn', summary: 'Error', detail: e.response.data, life: 4000});
+
+  if (e.request && e.request.status === 0) {
+    return toast.add({severity:'error', summary: 'Error', detail: 'Sorry, Connection to Server refused. Please check your internet connection or try again later', life: 4000});
+  }
+  return toast.add({severity:'warn', summary: 'Error', detail: 'Sorry, something went wrong. Please try reloading', life: 4000});
+
+}
+finally { loading.value = false }
 
 }
 
-//Load images from db to pinia store
-getImages();
+//Load data
+getData();
 
-
-//Get user's promos
-const getPromos = async () => {
-  try {
-    const response = await axios.get('/get-user-promos',
-        {
-          headers: {'Authorization': `Bearer ${store.token}`}
-        }
-    )
-
-    if (response.status === 200) {
-      userPromos.value = response.data.promos;
-      if (store.user) store.user.balance = parseFloat(response.data.balance)
-    }
-  } catch (e) {
-    console.clear();
-  }
-}
-
-if (store.token) getPromos();
 
 
 //On mounted Hook
@@ -189,7 +158,7 @@ const stakeNow = async () => {
   try {
 
     let bonus = 0;
-    if (userPromos.value) bonus = parseFloat(userPromos.value.amount);
+
 
      // validation
     if (nonPersistStore.selectedNumbers.length < 2) {
@@ -200,7 +169,7 @@ const stakeNow = async () => {
       return toast.add({severity:'warn', detail: 'Payable should be at least GHS 1', life: 4000});
     }
 
-    if ((parseFloat(store.user.balance) + bonus ) < parseFloat(payable.value)){
+    if (parseFloat(store.user.balance) < parseFloat(payable.value)){
       return toast.add({severity:'warn', detail: 'Balance is not sufficient', life: 4000});
     }
 
@@ -213,7 +182,6 @@ const stakeNow = async () => {
         '/lottery/stake',
         JSON.stringify({
           amountToStake: stakeFormData.amountToStake,
-          promo: userPromos.value ? userPromos.value.id : null,
           selectedNumbers: nonPersistStore.selectedNumbers
         }),
         {
@@ -223,13 +191,6 @@ const stakeNow = async () => {
 
     if (response.status === 201) {
       store.user.balance  = parseFloat(response.data.balance);
-      if (response.data.bonusLeft <= 0){
-        userPromos.value = null;
-      }
-      if (userPromos.value && response.data.bonusLeft > 0){
-        userPromos.value.amount = parseFloat(response.data.bonusLeft);
-      }
-
       toast.add({severity:'success', detail: 'Your Stake was successful!', life: 4000});
     }
 
@@ -302,7 +263,7 @@ const stakeNow = async () => {
                                   </div>
                     </template>
                     <template v-else>
-                      <h3 class="text-white" style="margin-top: 4%">Welcome to Nanty</h3>
+                      <h3 class="text-white" style="margin-top: 4%">Welcome to Nanty Lotto</h3>
                     </template>
 
     </div>
@@ -419,9 +380,6 @@ const stakeNow = async () => {
                v-model.number="stakeFormData.amountToStake" placeholder="Amount(GHS)" required>
       </div>
 
-      <h6 v-if="userPromos" class="mt-2 text-primary">
-        First deposit bonus: <mark class="fw-bold">GHS {{ formatNumber(userPromos.amount) }}</mark>
-      </h6>
       <h4 class="mt-2">Payable:
         <span class="text-danger">{{ formatNumber(payable) }}</span>
       </h4>
