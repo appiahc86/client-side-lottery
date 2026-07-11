@@ -46,16 +46,21 @@ const getData = async () => {
 getData();
 
 
+//Go to homepage
+const goBack = () => {
+  router.push({name: "home"});
+}
+
 </script>
 
 <template>
-  <h3 class="pt-5 mt-3 text-center">Transactions
-    <span style="float: right; margin-left: 10px; width: 30px; cursor: pointer;"
-          class="text-danger border-0 float-end"
-          @click="router.push({name: 'home'})" title="Close">
-  X
-</span>
+  <h3 class="pt-5 mt-3 text-center mb-3">Transactions
+    <button class="go-back-button me-2" @click="goBack" title="Close">
+      X
+    </button>
   </h3>
+
+
 
   <div class="container-fluid" style="margin-bottom: 50vh;">
     <div class="row">
@@ -119,5 +124,10 @@ getData();
 
 
 <style scoped>
-
+.go-back-button {
+  float: right;
+  background: red;
+  color: white;
+  font-weight: bold;
+}
 </style>

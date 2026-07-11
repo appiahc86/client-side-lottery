@@ -1,8 +1,13 @@
 <script setup>
-import {ref, computed, watch, onMounted} from 'vue'
+import {ref, computed, watch, onMounted} from 'vue';
 import {useHomeStore} from "@/store/home";
 import axios from '@/axios';
 const store = useHomeStore();
+import {useRouter} from 'vue-router';
+import Button from "primevue/button";
+
+const router = useRouter();
+
 
 const referenceNumber = ref(null);
 const MIN_AMOUNT = 1;
@@ -15,6 +20,11 @@ watch(()=> referenceNumber.value, (value) => {
   if (value) dialog.value.showModal()
   else dialog.value.close();
 })
+
+//Go to homepage
+const goBack = () => {
+  router.push({name: "home"});
+}
 
 //Close Dialog
 const closeDialog = () => {
@@ -132,7 +142,7 @@ const verifyPayment = async () => {
       if (response.data.status === "success") {
         return toast.add({severity:'success', summary: 'Success', detail: "Deposit was successful", life: 4000});
       }else {
-        return toast.add({severity:'warn', detail: "Please check transaction for status update", life: 4000});
+        return toast.add({severity:'warn', detail: "Please check transactions for status update", life: 4000});
       }
     }
 
@@ -178,10 +188,15 @@ onMounted( () => {
 
 
 <template>
-  <div class="page-wrap">
+  <div class="page-wrap my-3">
     <div class="shell">
 
       <div class="deposit-card">
+
+        <button class="go-back-button" @click="goBack" title="Close">
+          X
+        </button>
+
         <div class="card-eyebrow">Fund Your Account</div>
         <div class="card-title">Make a deposit</div>
         <div class="card-sub">
@@ -276,7 +291,33 @@ onMounted( () => {
         </form>
       </div>
 
-      <div class="footer-note text-dark">Need help? Reach support anytime, day or night.</div>
+<!--      <div class="footer-note text-dark">Need help? Reach support anytime, day or night.</div>-->
+      <div class="support-row">
+        <span class="support-label">Need help?</span>
+        <a
+            href="https://wa.me/233550452587"
+            target="_blank"
+            rel="noopener"
+            class="support-icon whatsapp"
+            title="Chat with us on WhatsApp"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12.004 2C6.486 2 2.01 6.476 2.01 11.994c0 2.114.611 4.083 1.664 5.744L2 22l4.395-1.65a9.94 9.94 0 0 0 5.609 1.648h.004c5.518 0 9.993-4.476 9.993-9.994C21.997 6.476 17.522 2 12.004 2zm0 18.19a8.19 8.19 0 0 1-4.184-1.15l-.3-.178-3.117 1.17.83-3.075-.196-.315a8.176 8.176 0 0 1-1.26-4.35c0-4.522 3.68-8.198 8.203-8.198 2.19 0 4.25.854 5.798 2.404a8.144 8.144 0 0 1 2.404 5.798c0 4.522-3.68 8.198-8.198 8.198z"/>
+          </svg>
+        </a>
+        <a
+            href="tel:+233550452587"
+            class="support-icon phone"
+            title="Call support"
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </a>
+      </div>
+
+
     </div>
   </div>
 
@@ -285,7 +326,7 @@ onMounted( () => {
     <div class="p-2 text-center">
       <button class="text-white bg-danger float-end" @click="closeDialog">X</button>
       <div class="text-center">
-        You will recieve a prompt on your mobile device. Please complete
+        You will receive a prompt on your mobile device. Please complete
         the transaction to continue.
       </div>
       <div class="clearfix pt-2"></div>
@@ -313,7 +354,7 @@ onMounted( () => {
   --forest: #0b2b26;
   --forest-deep: #081c18;
   --gold: #c9a24b;
-  --gold-soft: #e2c988;
+  --gold-soft: #958359;
   --cream: #faf8f3;
   --sage: #7c8f87;
   --line: #e4dfd2;
@@ -334,6 +375,13 @@ onMounted( () => {
   overflow-x: hidden;
 }
 
+.go-back-button {
+  float: right;
+  background: red;
+  color: white;
+  font-weight: bold;
+}
+
 .page-wrap::before {
   content: '';
   position: absolute;
@@ -352,34 +400,6 @@ onMounted( () => {
   position: relative;
   width: 100%;
   max-width: 460px;
-}
-
-.brand-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 28px;
-}
-.brand-mark {
-  width: 34px;
-  height: 34px;
-  border: 1.5px solid var(--gold-soft);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Playfair Display', serif;
-  font-weight: 600;
-  color: var(--gold-soft);
-  font-size: 15px;
-}
-.brand-name {
-  color: #efe9da;
-  letter-spacing: 0.18em;
-  font-size: 12.5px;
-  text-transform: uppercase;
-  font-weight: 600;
 }
 
 .deposit-card {
@@ -445,6 +465,8 @@ onMounted( () => {
   border: 1.5px solid var(--line);
   border-radius: 12px;
   background: #fff;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.14);
   overflow: hidden;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
@@ -457,7 +479,7 @@ onMounted( () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
+  padding: 0 10px;
   background: var(--forest);
   color: var(--gold-soft);
   font-family: 'JetBrains Mono', monospace;
@@ -634,9 +656,8 @@ onMounted( () => {
   transform: translateY(0);
 }
 .submit-btn:disabled {
-  background: #cfc8b4;
+  background: #85774f;
   color: #fff;
-  box-shadow: none;
   cursor: not-allowed;
   transform: none;
 }
@@ -652,12 +673,7 @@ onMounted( () => {
   letter-spacing: 0.02em;
 }
 
-.footer-note {
-  text-align: center;
-  margin-top: 26px;
-  font-size: 12px;
-  color: rgba(239, 233, 218, 0.55);
-}
+
 
 @media (max-width: 420px) {
   .deposit-card {
@@ -670,4 +686,48 @@ onMounted( () => {
     font-size: 22px;
   }
 }
+
+
+
+.support-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e4dfd2;
+}
+
+.support-label {
+  font-size: 13px;
+  color: #7c8f87;
+  font-weight: 500;
+}
+
+.support-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.support-icon.whatsapp {
+  background: #25D366;
+  color: #fff;
+}
+
+.support-icon.phone {
+  background: #0b2b26;
+  color: #fff;
+}
+
+.support-icon:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
 </style>

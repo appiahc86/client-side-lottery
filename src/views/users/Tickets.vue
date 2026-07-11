@@ -94,6 +94,10 @@ onMounted(() => {
   getData();
 })
 
+//Go to homepage
+const goBack = () => {
+  router.push({name: "home"});
+}
 
 
 //Get winning Numbers
@@ -165,6 +169,10 @@ const switchTab = (tab) => { activeTab.value = tab; };
     </header>
 
     <main class="page-main">
+
+      <button class="go-back-button" @click="goBack" title="Close">
+        X
+      </button>
 
       <!-- Page Title -->
       <div class="page-heading">
@@ -604,5 +612,12 @@ const switchTab = (tab) => { activeTab.value = tab; };
 .loading-dialog {
   border: 0;
   background: rgba(204, 204, 204, 0.66);
+}
+
+.go-back-button {
+  float: right;
+  background: red;
+  color: white;
+  font-weight: bold;
 }
 </style>

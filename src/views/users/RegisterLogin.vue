@@ -32,6 +32,11 @@ if (store.token) return router.push({name: 'home'});
 })
 
 
+//Go to homepage
+const goBack = () => {
+  router.push({name: "home"});
+}
+
 //Validate phone number
 const validatePhoneNumber = (e) => {
   e.target.value = e.target.value.replace(/[^0-9]/g, '');
@@ -135,9 +140,10 @@ const requestSMS = async () => {
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5 col-xl-4 mt-3 mt-md-5">
 
-      <h3 style="float: right; margin-left: 10px; width: 30px; cursor: pointer;"
-          class="text-danger border-0 float-end"
-          @click="router.push({name: 'home'})" title="Close">X</h3>&nbsp;
+
+      <button class="go-back-button" @click="goBack" title="Close">
+        X
+      </button>
       <br><br>
 
       <div class="card shadow">
@@ -287,6 +293,11 @@ img {
 
 }
 
-
+.go-back-button {
+  float: right;
+  background: red;
+  color: white;
+  font-weight: bold;
+}
 
 </style>

@@ -160,7 +160,7 @@ const logout = () => {
         </div>
 
         <div class="col-sm-4 mt-3">
-          <div class="">&copy; All Right Reserved 2024, <span class="text-warning">Nanty </span></div>
+          <div class="">&copy; All Right Reserved 2026, <span class="text-warning">Nanty </span></div>
         </div>
 
         <div class="col-sm-4 mt-3">
@@ -203,5 +203,12 @@ const logout = () => {
   .hide-on-sm{
     display: none;
   }
+}
+
+.go-back-button {
+  float: right;
+  background: red;
+  color: white;
+  font-weight: bold;
 }
 </style>
