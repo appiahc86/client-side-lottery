@@ -158,7 +158,7 @@ onMounted(() => {
         <div class="support-row">
           <span class="support-label">Need help?</span>
           <a
-          href="https://wa.me/233550452587"
+          href="https://wa.me/233504002406"
           target="_blank"
           rel="noopener"
           class="support-icon whatsapp"
@@ -169,15 +169,15 @@ onMounted(() => {
             <path d="M12.004 2C6.486 2 2.01 6.476 2.01 11.994c0 2.114.611 4.083 1.664 5.744L2 22l4.395-1.65a9.94 9.94 0 0 0 5.609 1.648h.004c5.518 0 9.993-4.476 9.993-9.994C21.997 6.476 17.522 2 12.004 2zm0 18.19a8.19 8.19 0 0 1-4.184-1.15l-.3-.178-3.117 1.17.83-3.075-.196-.315a8.176 8.176 0 0 1-1.26-4.35c0-4.522 3.68-8.198 8.203-8.198 2.19 0 4.25.854 5.798 2.404a8.144 8.144 0 0 1 2.404 5.798c0 4.522-3.68 8.198-8.198 8.198z"/>
           </svg>
           </a>
-          <a
-          href="tel:+233550452587"
-          class="support-icon phone"
-          title="Call support"
-          >
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-          </svg>
-          </a>
+<!--          <a-->
+<!--          href="tel:+233504002406"-->
+<!--          class="support-icon phone"-->
+<!--          title="Call support"-->
+<!--          >-->
+<!--          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">-->
+<!--            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>-->
+<!--          </svg>-->
+<!--          </a>-->
         </div>
 
     </div>
