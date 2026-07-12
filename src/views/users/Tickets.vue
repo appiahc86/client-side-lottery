@@ -284,6 +284,18 @@ const switchTab = (tab) => { activeTab.value = tab; };
                 </div>
               </div>
 
+              <!-- Staking Details -->
+              <div class="stake-details">
+                <div class="stake-col">
+                  <span class="stake-label">Perm Amount</span>
+                  <span class="stake-value">GHS {{ formatNumber(item.amount) }}</span>
+                </div>
+                <div class="stake-col stake-col-end">
+                  <span class="stake-label">Total Paid</span>
+                  <span class="stake-value">GHS {{ formatNumber(item.payable) }}</span>
+                </div>
+              </div>
+
               <div class="ticket-footer">
                 <span class="ticket-id">ID: #{{ item.id }}</span>
                 <span class="ticket-status-text">{{ item.amountWon ? 'Winner' : 'Not a winner' }}</span>
