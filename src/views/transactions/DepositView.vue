@@ -295,7 +295,7 @@ onMounted( () => {
       <div class="support-row">
         <span class="support-label">Need help?</span>
         <a
-            href="https://wa.me/233504002406"
+            href="https://wa.me/233504002306"
             target="_blank"
             rel="noopener"
             class="support-icon whatsapp"
