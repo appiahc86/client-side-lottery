@@ -32,9 +32,9 @@ const closeDialog = () => {
 }
 
 const NETWORKS = [
-  { name: 'MTN', color: '#FFC100', prefixes: ['024', '025', '053', '054', '055', '059'] },
-  { name: 'Telecel', color: '#E4002B', prefixes: ['020', '050'] },
-  { name: 'AirtelTigo', color: '#0033A0', prefixes: ['026', '027', '056', '057'] },
+  { name: 'MTN', color: '#FFC100'},
+  { name: 'TELECEL', color: '#E4002B'},
+  { name: 'AIRTELTIGO', color: '#0033A0'},
 ]
 
 const presets = [5, 20, 50, 100]
@@ -57,6 +57,7 @@ const amountIsValid = computed(() => !isNaN(amountValue.value) && amountValue.va
 
 // --- Phone state ---
 const phoneDigits = ref('0' + store.user.phone)   // raw digits, local format starting with 0
+const userNetwork = store?.user?.network;
 
 function formatPhoneDisplay(digits) {
   let out = digits.slice(0, 3)
@@ -70,8 +71,7 @@ const phoneDisplay = computed(() => formatPhoneDisplay(phoneDigits.value))
 
 
 const network = computed(() => {
-  const prefix3 = phoneDigits.value.slice(0, 3)
-  return NETWORKS.find((n) => n.prefixes.includes(prefix3)) || null
+  return NETWORKS.find((n) => n.name === userNetwork.toUpperCase()) || null
 })
 
 
